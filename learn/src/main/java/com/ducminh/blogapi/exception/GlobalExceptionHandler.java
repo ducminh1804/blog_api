@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -50,6 +51,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ApiResponse.builder()
                 .code(ErrorCode.INVALID_SIGNATURE.getCode())
                 .message(ErrorCode.INVALID_SIGNATURE.getMessage())
+                .build(),
+                HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException ex) {
+        return new ResponseEntity<>(ApiResponse.builder()
+                .code(ErrorCode.ACCESSDINED.getCode())
+                .message(ErrorCode.ACCESSDINED.getMessage())
                 .build(),
                 HttpStatus.UNAUTHORIZED);
     }

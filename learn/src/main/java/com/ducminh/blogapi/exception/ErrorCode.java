@@ -12,7 +12,8 @@ public enum ErrorCode {
     INVALID_SIGNATURE(1006, "Token không hợp lệ"),
     INVALID_JWT(1007, "Lỗi xác thực"),
 
-    INVALID_ROLE(1008, "Role không tồn tại");
+    INVALID_ROLE(1008, "Role không tồn tại"),
+    ACCESSDINED(1009, "Không có quyển truy cập");
 
 
     private int code;

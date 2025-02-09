@@ -5,6 +5,7 @@ import com.ducminh.blogapi.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -54,13 +55,13 @@ public class JwtService {
             return true;
         } catch (ExpiredJwtException ex) {
             throw new AppException(ErrorCode.EXPIRED_JWT);
-        } catch (SignatureException ex) {
-            throw new AppException(ErrorCode.INVALID_SIGNATURE);
         } catch (Exception ex) {
             System.out.println(ex);
             throw new AppException(ErrorCode.INVALID_JWT);  // Sửa chính tả ErrorCode.IVALID_JWT => ErrorCode.INVALID_JWT
         }
     }
+    //day chi la phuong thuc kiem tra riêng về token, chứ k kiểm tra quyển truy cập nên k bắt được lỗi
+    //accessdined
 
     public boolean isValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);

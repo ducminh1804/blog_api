@@ -12,8 +12,10 @@ import com.ducminh.blogapi.mapper.UserMapper;
 import com.ducminh.blogapi.repository.RoleRepository;
 import com.ducminh.blogapi.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class UserService {
     @Autowired
     private UserRepository userRepository;
@@ -44,13 +47,15 @@ public class UserService {
         user.setLastName(request.getLastName());
         //set role
         Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByName(RoleName.USER.name()).orElseThrow(() -> new AppException(ErrorCode.INVALID_ROLE)));
+        roles.add(roleRepository.findByName(RoleName.ROLE_USER.name()).orElseThrow(() -> new AppException(ErrorCode.INVALID_ROLE)))
+        ;
         user.setRoles(roles);
-
         return userRepository.save(user);
     }
 
+    @PreAuthorize("hasRole('USER')")
     public List<User> getAll() {
+        log.info("vao dc method");
         return userRepository.findAll();
     }
 
@@ -62,7 +67,6 @@ public class UserService {
 
     public UserResponse userUpdate(String userId, UserUpdateRequest request) {
         User userOri = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-//        User user = Mappers.getMapper(UserMapper.class).updateUser(userOri, request);
         User userUpdate = Mappers.getMapper(UserMapper.class).updateUser(userOri, request);
         User userAfterUpdate = userRepository.save(userUpdate);
         UserResponse userResponse = Mappers.getMapper(UserMapper.class).toUserResponse(userAfterUpdate);
