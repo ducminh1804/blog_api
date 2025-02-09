@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -28,7 +30,7 @@ public class Post extends UserAudit {
     private String body;
 
     @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
+    private Set<Comment> comments = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -44,5 +46,5 @@ public class Post extends UserAudit {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private List<Tag> tags = new ArrayList<>();
+    private Set<Tag> tags = new HashSet<>();
 }

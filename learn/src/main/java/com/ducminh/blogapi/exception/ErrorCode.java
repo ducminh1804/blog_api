@@ -10,7 +10,9 @@ public enum ErrorCode {
     WRONG_PASSWORD(1004, "Sai mật khẩu"),
     EXPIRED_JWT(1005, "Token hết hạn"),
     INVALID_SIGNATURE(1006, "Token không hợp lệ"),
-    INVALID_JWT(1007, "Lỗi xác thực");
+    INVALID_JWT(1007, "Lỗi xác thực"),
+
+    INVALID_ROLE(1008, "Role không tồn tại");
 
 
     private int code;

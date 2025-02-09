@@ -1,22 +1,26 @@
 package com.ducminh.blogapi.service;
 
-import com.ducminh.blogapi.config.SecurityConfig;
+import com.ducminh.blogapi.constant.RoleName;
 import com.ducminh.blogapi.dto.request.UserCreationRequest;
 import com.ducminh.blogapi.dto.request.UserUpdateRequest;
 import com.ducminh.blogapi.dto.response.UserResponse;
+import com.ducminh.blogapi.entity.Role;
 import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.exception.AppException;
 import com.ducminh.blogapi.exception.ErrorCode;
 import com.ducminh.blogapi.mapper.UserMapper;
+import com.ducminh.blogapi.repository.RoleRepository;
 import com.ducminh.blogapi.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -24,6 +28,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RoleRepository roleRepository;
 
     public User createUser(UserCreationRequest request) {
 
@@ -36,6 +42,11 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
+        //set role
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleRepository.findByName(RoleName.USER.name()).orElseThrow(() -> new AppException(ErrorCode.INVALID_ROLE)));
+        user.setRoles(roles);
+
         return userRepository.save(user);
     }
 

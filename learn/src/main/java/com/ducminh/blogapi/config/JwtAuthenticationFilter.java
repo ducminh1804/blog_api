@@ -54,6 +54,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
+        if (request.getRequestURI().startsWith("/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         token = authHeader.substring(7);
         try {
             username = jwtService.extractUsername(token);//todo extract the username from jwt token;
@@ -65,8 +71,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
+            //cái chỗ extractname kia mà lỗi, là nó throw exception luôn, làm cho mọi code bên dưới dừng hết rồi bắn ra Exception
+            // , bao gồm cái doFIlter(), làm nó không chuyển hướng tới cái filterchain mà chỉ sử dụng
+            // user+pass(bỏ qua token dù nó có đính kèm theo) để xác thực
+            //=> do đó phải kiểm tra cái urlstartwith()
+            // cái handlerExceptionResolver sẽ bắn ra exception (signatureException + ExpiredJwtException) mà
+            // spring k quản lí  = servlet dc, nó sẽ giúp đưa exception này ra bên ngoài cùng để GlobalException
+            //bắt được và xử lí
+            System.out.println(SecurityContextHolder.getContext().getAuthentication());
             filterChain.doFilter(request, response);
-
         } catch (Exception ex) {
             handlerExceptionResolver.resolveException(request, response, null, ex);
         }

@@ -1,15 +1,18 @@
 package com.ducminh.blogapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "roles")
@@ -22,6 +25,7 @@ public class Role {
     @Column(name = "name")
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
-    private List<User> users = new ArrayList<>();
+    private Set<User> users = new HashSet<>();
 }
