@@ -13,7 +13,8 @@ public enum ErrorCode {
     INVALID_JWT(1007, "Lỗi xác thực"),
 
     INVALID_ROLE(1008, "Role không tồn tại"),
-    ACCESSDINED(1009, "Không có quyển truy cập");
+    ACCESSDINED(1009, "Không có quyển truy cập"),
+    NOT_PERMISSION(1010, "Không được phép");
 
 
     private int code;

@@ -72,4 +72,15 @@ public class GlobalExceptionHandler {
                 .build(),
                 HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(value = Exception.class)
+    ResponseEntity<ApiResponse> handlingException(Exception ex) {
+        System.out.println(ex.getMessage());
+        return new ResponseEntity<>(
+                ApiResponse.builder()
+                        .code(ErrorCode.INVALID_DATA.getCode())
+                        .message(ErrorCode.INVALID_DATA.getMessage())
+                        .build()
+                , HttpStatus.BAD_REQUEST);
+    }
 }

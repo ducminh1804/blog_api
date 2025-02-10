@@ -11,8 +11,10 @@ import org.mapstruct.MappingTarget;
 
 @Mapper
 public interface UserMapper {
+    //    dat ten field giong nhau
     User converToUser(UserCreationRequest userCreationRequest);
 
+    //    cap nhat it field => nhieu field
     @Mapping(source = "userUpdateRequest.firstName", target = "firstName")
     @Mapping(source = "userUpdateRequest.lastName", target = "lastName")
     @Mapping(source = "userUpdateRequest.email", target = "email")
