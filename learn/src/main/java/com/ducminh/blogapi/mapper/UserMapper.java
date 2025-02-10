@@ -18,6 +18,7 @@ public interface UserMapper {
     @Mapping(source = "userUpdateRequest.firstName", target = "firstName")
     @Mapping(source = "userUpdateRequest.lastName", target = "lastName")
     @Mapping(source = "userUpdateRequest.email", target = "email")
+    @Mapping(target = "roles", ignore = true)
     User updateUser(@MappingTarget User user, UserUpdateRequest userUpdateRequest);
 
     UserResponse toUserResponse(User user);

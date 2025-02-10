@@ -8,6 +8,8 @@ import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,5 +48,15 @@ public class UserController {
     @DeleteMapping("/{userId}")
     void deleteUser(@PathVariable("userId") String userId) {
         userService.deleteUser(userId);
+    }
+
+    @GetMapping("/info")
+    public ApiResponse<UsernamePasswordAuthenticationToken> getInfo() {
+        UsernamePasswordAuthenticationToken u = userService.getInfo();
+        ApiResponse<UsernamePasswordAuthenticationToken> apiResponse =
+                ApiResponse.<UsernamePasswordAuthenticationToken>builder()
+                        .data(u)
+                        .build();
+        return apiResponse;
     }
 }

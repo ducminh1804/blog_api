@@ -4,11 +4,13 @@ import com.ducminh.blogapi.dto.request.RoleRequest;
 import com.ducminh.blogapi.dto.response.RoleResponse;
 import com.ducminh.blogapi.entity.Permission;
 import com.ducminh.blogapi.entity.Role;
+import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.exception.AppException;
 import com.ducminh.blogapi.exception.ErrorCode;
 import com.ducminh.blogapi.mapper.RoleMapper;
 import com.ducminh.blogapi.repository.PermissionRepository;
 import com.ducminh.blogapi.repository.RoleRepository;
+import com.ducminh.blogapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,8 @@ public class RoleService {
     private RoleMapper roleMapper;
     @Autowired
     private PermissionRepository permissionRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Role findByName(String name) {
         return roleRepository.findByName(name).orElseThrow(() -> new AppException(ErrorCode.INVALID_ROLE));
@@ -45,5 +49,20 @@ public class RoleService {
     public List<RoleResponse> getAll() {
         List<RoleResponse> roleResponses = roleRepository.findAll().stream().map(roleMapper::toRoleResponse).collect(Collectors.toList());
         return roleResponses;
+    }
+
+    public List<String> getAllRolePermissons(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        List<String> authorities = new ArrayList<>();
+        List<String> roles = user.getRoles().stream()
+                .map(role -> role.getName())
+                .collect(Collectors.toList());
+        List<String> permissions = user.getRoles().stream()
+                .flatMap(role -> role.getPermissions().stream())
+                .map(permission -> permission.getName())
+                .collect(Collectors.toList());
+        authorities.addAll(roles);
+        authorities.addAll(permissions);
+        return authorities;
     }
 }

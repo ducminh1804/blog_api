@@ -16,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -59,16 +62,24 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    @PreAuthorize("hasRole('APROVE_POST')")
     public UserResponse findUserById(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        UserResponse userResponse = Mappers.getMapper(UserMapper.class).toUserResponse(user);
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));//tim user
+        UserResponse userResponse = Mappers.getMapper(UserMapper.class).toUserResponse(user);//
         return userResponse;
     }
 
     public UserResponse userUpdate(String userId, UserUpdateRequest request) {
+        // tim user
         User userOri = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        //cap nhat cac field
         User userUpdate = Mappers.getMapper(UserMapper.class).updateUser(userOri, request);
+        List<Role> roles = roleRepository.findAllByNameIn(request.getRoles());
+        System.out.println("roles:" + roles);
+        userUpdate.setRoles(new HashSet<>(roles));
+        //luu user moi
         User userAfterUpdate = userRepository.save(userUpdate);
+        // chuyen sang user response
         UserResponse userResponse = Mappers.getMapper(UserMapper.class).toUserResponse(userAfterUpdate);
         return userResponse;
     }
@@ -77,5 +88,7 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-
+    public UsernamePasswordAuthenticationToken getInfo() {
+        return (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+    }
 }

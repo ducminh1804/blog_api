@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class UserUpdateRequest {
     @NotBlank
@@ -12,4 +14,6 @@ public class UserUpdateRequest {
     private String lastName;
     @Email
     private String email;
+    private List<String> roles;
+
 }

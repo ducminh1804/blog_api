@@ -30,6 +30,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -45,11 +46,25 @@ public class ApplicationConfig {
         return username -> new UserDetails() {
             User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
+            //            @Override
+//            public Collection<? extends GrantedAuthority> getAuthorities() {
+//                List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
+//                List<SimpleGrantedAuthority> roles = user.getRoles().stream()
+//                        .map(role -> new SimpleGrantedAuthority(role.getName()))
+//                        .collect(Collectors.toList());
+//
+//                List<SimpleGrantedAuthority> permissions = user.getRoles().stream()
+//                        .flatMap(role -> role.getPermissions().stream())
+//                        .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+//                        .collect(Collectors.toList());
+//
+//                grantedAuthorities.addAll(roles);
+//                grantedAuthorities.addAll(permissions);
+//                return grantedAuthorities;
+//            }
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
-                return user.getRoles().stream().map(
-                        role -> new SimpleGrantedAuthority(role.getName())
-                ).collect(Collectors.toList());
+                return null;
             }
 
             @Override
