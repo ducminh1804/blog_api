@@ -55,7 +55,7 @@ public class RoleService {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         List<String> authorities = new ArrayList<>();
         List<String> roles = user.getRoles().stream()
-                .map(role -> role.getName())
+                .map(role -> "ROLE_" + role.getName())
                 .collect(Collectors.toList());
         List<String> permissions = user.getRoles().stream()
                 .flatMap(role -> role.getPermissions().stream())

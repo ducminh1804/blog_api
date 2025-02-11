@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,19 +51,20 @@ public class UserService {
         user.setLastName(request.getLastName());
         //set role
         Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByName(RoleName.ROLE_USER.name()).orElseThrow(() -> new AppException(ErrorCode.INVALID_ROLE)))
-        ;
+        roles.add(roleRepository.findByName(RoleName.USER.name()).orElseThrow(() -> new AppException(ErrorCode.INVALID_ROLE)));
         user.setRoles(roles);
         return userRepository.save(user);
+
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAll() {
         log.info("vao dc method");
         return userRepository.findAll();
     }
 
-    @PreAuthorize("hasRole('APROVE_POST')")
+    //    @PreAuthorize("hasAnyAuthority('APROVE_POST')")
+    @PostAuthorize("returnObject.username == authentication.getName()")
     public UserResponse findUserById(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));//tim user
         UserResponse userResponse = Mappers.getMapper(UserMapper.class).toUserResponse(user);//
@@ -91,4 +93,6 @@ public class UserService {
     public UsernamePasswordAuthenticationToken getInfo() {
         return (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
     }
+
+    
 }

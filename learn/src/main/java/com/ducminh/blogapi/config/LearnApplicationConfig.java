@@ -37,7 +37,7 @@ public class LearnApplicationConfig {
         return args -> {
             if (userRepository.findByUsername(userAdmin).isEmpty()) {
                 Set<Role> roles = new HashSet<>();
-                Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN.name())
+                Role adminRole = roleRepository.findByName(RoleName.ADMIN.name())
                         .orElseThrow(() -> new AppException(ErrorCode.INVALID_ROLE));
                 roles.add(adminRole);
 

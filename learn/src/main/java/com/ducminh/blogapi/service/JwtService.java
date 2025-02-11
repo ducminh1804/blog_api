@@ -1,17 +1,18 @@
 package com.ducminh.blogapi.service;
 
 import com.ducminh.blogapi.dto.response.RoleResponse;
+import com.ducminh.blogapi.entity.InvalidToken;
 import com.ducminh.blogapi.entity.Role;
 import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.exception.AppException;
 import com.ducminh.blogapi.exception.ErrorCode;
 import com.ducminh.blogapi.mapper.RoleMapper;
+import com.ducminh.blogapi.repository.InvalidTokenRepository;
 import com.ducminh.blogapi.repository.UserRepository;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class JwtService {
     @Value("${app.jwtSecret}")
     private String jwtSecret;
@@ -31,6 +33,8 @@ public class JwtService {
     private RoleMapper roleMapper;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private InvalidTokenRepository invalidTokenRepository;
 
     public String generateToken(String username) {
         Date now = new Date();
@@ -40,6 +44,7 @@ public class JwtService {
         claims.put("authorities", authorities); // Đưa danh sách quyền vào token
 
         return Jwts.builder()
+                .setId(UUID.randomUUID().toString())
                 .setSubject(username)
                 .claim("authorities", authorities)
                 .setIssuedAt(now)
@@ -49,16 +54,22 @@ public class JwtService {
     }
 
     public String extractUsername(String token) {
-        String sub;
         if (token == null) {
-            throw new AppException(ErrorCode.INVALID_JWT);  // Ném ngoại lệ nếu token là null
+            throw new AppException(ErrorCode.EMPTY_TOKEN);  // Ném ngoại lệ nếu token là null
         }
-        sub = Jwts.parserBuilder()
-                .setSigningKey(jwtSecret)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        String sub;
+        try {
+            sub = Jwts.parserBuilder()
+                    .setSigningKey(jwtSecret)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (ExpiredJwtException ex) {
+            throw new AppException(ErrorCode.EXPIRED_JWT);
+        }
+        verify(token);
+
         return sub;
     }
 
@@ -77,27 +88,47 @@ public class JwtService {
                 .collect(Collectors.toList());
     }
 
-    public boolean verify(String token) {
+    public boolean isValid(String token, UserDetails userDetails) {
+        String username = extractUsername(token);
+        return username.equals(userDetails.getUsername());
+    }
+
+    public Claims verify(String token) {
+        Claims claimsJws = null;
         try {
             // Sử dụng parseClaimsJws thay vì parse để kiểm tra token
-            Jwts.parserBuilder()
+            claimsJws = Jwts.parserBuilder()
                     .setSigningKey(jwtSecret)
                     .build()
-                    .parseClaimsJws(token); // Kiểm tra chữ ký của token
-            return true;
+                    .parseClaimsJws(token).getBody(); // Kiểm tra chữ ký của token
         } catch (ExpiredJwtException ex) {
             throw new AppException(ErrorCode.EXPIRED_JWT);
         } catch (Exception ex) {
             System.out.println(ex);
-            throw new AppException(ErrorCode.INVALID_JWT);  // Sửa chính tả ErrorCode.IVALID_JWT => ErrorCode.INVALID_JWT
+            throw new AppException(ErrorCode.INVALID_JWT);
         }
+
+        if (!invalidTokenRepository.findById(claimsJws.getId()).isEmpty())
+            throw new AppException(ErrorCode.EXPIRED_JWT);
+        return claimsJws;
     }
     //day chi la phuong thuc kiem tra riêng về token, chứ k kiểm tra quyển truy cập nên k bắt được lỗi
     //accessdined
 
-    public boolean isValid(String token, UserDetails userDetails) {
-        String username = extractUsername(token);
-        return username.equals(userDetails.getUsername());
+
+    public void logout(String token) {
+        try {
+            Claims claims = verify(token);
+            String jit = claims.getId();
+            Date expired = claims.getExpiration();
+            InvalidToken invalidToken = InvalidToken.builder()
+                    .jit(jit)
+                    .expiryTime(expired)
+                    .build();
+            invalidTokenRepository.save(invalidToken);
+        } catch (AppException exception) {
+            throw new AppException(ErrorCode.INVALID_JWT);
+        }
     }
 
     public static void main(String[] args) {

@@ -11,10 +11,15 @@ public enum ErrorCode {
     EXPIRED_JWT(1005, "Token hết hạn"),
     INVALID_SIGNATURE(1006, "Token không hợp lệ"),
     INVALID_JWT(1007, "Lỗi xác thực"),
+    EMPTY_TOKEN(1011, "Token không được để trống"),
 
     INVALID_ROLE(1008, "Role không tồn tại"),
+
     ACCESSDINED(1009, "Không có quyển truy cập"),
-    NOT_PERMISSION(1010, "Không được phép");
+
+    NOT_PERMISSION(1010, "Không được phép"),
+
+    ALL_EXCEPTION(1111, "Ngoại lệ bao quát");
 
 
     private int code;
