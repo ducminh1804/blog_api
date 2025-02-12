@@ -1,5 +1,6 @@
 package com.ducminh.blogapi.entity;
 
+import com.ducminh.blogapi.entity.audit.UserAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "permissions")
-public class Permission {
+public class Permission extends UserAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")

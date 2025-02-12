@@ -1,5 +1,6 @@
 package com.ducminh.blogapi.entity;
 
+import com.ducminh.blogapi.entity.audit.UserAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;

@@ -90,7 +90,7 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    //    @PreAuthorize("hasRole('USER')")
     public UsernamePasswordAuthenticationToken getInfo() {
         return (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
     }
