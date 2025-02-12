@@ -2,6 +2,7 @@ package com.ducminh.blogapi.controller;
 
 import com.ducminh.blogapi.dto.request.AuthenticationRequest;
 import com.ducminh.blogapi.dto.request.IntrospectRequest;
+import com.ducminh.blogapi.dto.request.RefreshTokenRequest;
 import com.ducminh.blogapi.dto.response.ApiResponse;
 import com.ducminh.blogapi.dto.response.AuthenticationResponse;
 import com.ducminh.blogapi.service.AuthenticationService;
@@ -24,12 +25,25 @@ public class AuthenticationController {
     @Autowired
     private JwtService tokenService;
 
+    @Autowired
+    private JwtService jwtService;
+
     @PostMapping("/get-token")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         AuthenticationResponse authenticate = service.authenticate(request);
         return ApiResponse.<AuthenticationResponse>builder()
                 .data(
                         authenticate
+                )
+                .build();
+    }
+
+    @PostMapping("/refresh-token")
+    ApiResponse<AuthenticationResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        AuthenticationResponse refreshToken = service.refreshToken(refreshTokenRequest);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .data(
+                        refreshToken
                 )
                 .build();
     }

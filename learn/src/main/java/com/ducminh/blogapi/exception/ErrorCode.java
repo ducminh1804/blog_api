@@ -18,6 +18,7 @@ public enum ErrorCode {
     ACCESSDINED(1009, "Không có quyển truy cập"),
 
     NOT_PERMISSION(1010, "Không được phép"),
+    REFRESHTOKEN_EXPIRED(1012, "Refresh Token hết hạn, vui lòng đăng nhập lại"),
 
     ALL_EXCEPTION(1111, "Ngoại lệ bao quát");
 

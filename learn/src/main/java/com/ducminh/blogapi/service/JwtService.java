@@ -1,9 +1,6 @@
 package com.ducminh.blogapi.service;
 
-import com.ducminh.blogapi.dto.response.RoleResponse;
 import com.ducminh.blogapi.entity.InvalidToken;
-import com.ducminh.blogapi.entity.Role;
-import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.exception.AppException;
 import com.ducminh.blogapi.exception.ErrorCode;
 import com.ducminh.blogapi.mapper.RoleMapper;
@@ -26,7 +23,9 @@ public class JwtService {
     @Value("${app.jwtSecret}")
     private String jwtSecret;
     @Value("${app.jwtExpirationInMs}")
-    private int jwtExpirationInMs;
+    private long jwtExpirationInMs;
+    @Value("${app.jwtRefreshExpirationInMs}")
+    private long jwtRefreshExpirationInMs;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -36,17 +35,19 @@ public class JwtService {
     @Autowired
     private InvalidTokenRepository invalidTokenRepository;
 
+
     public String generateToken(String username) {
         Date now = new Date();
         Date expired = new Date(System.currentTimeMillis() + jwtExpirationInMs);
         HashMap<String, List> claims = new HashMap<>();
         List<String> authorities = roleService.getAllRolePermissons(username);
         claims.put("authorities", authorities); // Đưa danh sách quyền vào token
-
+//        String refreshToken = generateRefreshToken(username);
         return Jwts.builder()
                 .setId(UUID.randomUUID().toString())
                 .setSubject(username)
                 .claim("authorities", authorities)
+//                .claim("refresh_token", refreshToken)
                 .setIssuedAt(now)
                 .setExpiration(expired)
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)
@@ -69,9 +70,56 @@ public class JwtService {
             throw new AppException(ErrorCode.EXPIRED_JWT);
         }
         verify(token);
-
         return sub;
     }
+
+    public String generateRefreshToken(String username) {
+        Date now = new Date();
+        Date expired = new Date(System.currentTimeMillis() + jwtRefreshExpirationInMs);
+        String refreshToken = Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(now)
+                .setExpiration(expired)
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                .compact();
+        return refreshToken;
+    }
+
+
+    public Claims verifyRefreshToken(String token) {
+        Claims claims = null;
+        try {
+            claims = Jwts.parserBuilder()
+                    .setSigningKey(jwtSecret)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException ex) {
+            throw new AppException(ErrorCode.EXPIRED_JWT);
+        } catch (Exception ex) {
+            System.out.println(ex);
+            throw new AppException(ErrorCode.INVALID_JWT);
+        }
+        return claims;
+    }
+
+    public String extractUsernameRefreshToken(String token) {
+        if (token == null) throw new AppException(ErrorCode.EMPTY_TOKEN);
+        String sub;
+        try {
+            sub = Jwts.parserBuilder()
+                    .setSigningKey(jwtSecret)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (ExpiredJwtException ex) {
+            throw new AppException(ErrorCode.EXPIRED_JWT);
+        }
+        verifyRefreshToken(token);
+        return sub;
+    }
+
 
     public List<SimpleGrantedAuthority> extractAuthority(String token) {
         if (token == null) throw new AppException(ErrorCode.INVALID_JWT);
@@ -131,18 +179,20 @@ public class JwtService {
         }
     }
 
+
     public static void main(String[] args) {
         String key = "B85sVEdg188jJ5oWpqLaJuX4m/ILnbspdbGxkwU9928/zbKU+k4Wslf3K9UOJzwCuVMwcJTKhJyKYkgoz39CSw==";
         String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9TVEFGRiIsIlJPTEVfVVNFUiIsIlJPTEVfQVBST1ZFX1BPU1QiLCJST0xFX0FERF9QT1NUIl0sImlhdCI6MTczOTIwMjMzMCwiZXhwIjoxNzM5Mjg4NzMwfQ.0JMtwQbLEQg_tUyh1ACL10-Gc4O2t-E_GfzLTo7feGY";
 
-        List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
-        Claims authority = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
-        System.out.println(authority.get("authorities", ArrayList.class));
+        Date now = new Date();
+        Date expired = new Date(System.currentTimeMillis() + 8640000);
+        System.out.println(Jwts.builder()
+//                .setId(UUID.randomUUID().toString())
+                .setSubject("user")
+                .setIssuedAt(now)
+                .setExpiration(expired)
+                .signWith(SignatureAlgorithm.HS256, key)
+                .compact());
     }
 
 }
