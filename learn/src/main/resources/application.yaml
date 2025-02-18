@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: learn
+  datasource:
+    url: ${DBMS_CONNECTION:jdbc:mysql://mysql-container:3306/blogdb}
+    driver-class-name: "com.mysql.cj.jdbc.Driver"
+    username: ${DBMS_USERNAME:root}
+    password: ${DBMS_PASSWORD:root}
+  jpa:
+    hibernate:
+    ddl-auto: update
+    show-sql: true
+    auditor-aware-ref: auditorAwareImpl
+
+app:
+  jwtSecret: "B85sVEdg188jJ5oWpqLaJuX4m/ILnbspdbGxkwU9928/zbKU+k4Wslf3K9UOJzwCuVMwcJTKhJyKYkgoz39CSw=="
+  jwtExpirationInMs: 86400000
+  jwtRefreshExpirationInMs: 604800000

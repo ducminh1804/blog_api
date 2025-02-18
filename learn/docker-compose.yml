@@ -1,0 +1,30 @@
+#version: "3.8"
+#
+#services:
+#  mysql-container:
+#    container_name: mysql-container
+#    image: mysql
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_DATABASE: blogdb
+#    ports:
+#      - "3308:3306"   # Chỉ định port cho MySQL (host:container)
+#    networks:
+#      - spring-net
+#
+#  springboot-restful-webservices:
+#    container_name: springboot-restful-webservices
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8081:8080"  # Chỉ định port cho Spring Boot
+#    depends_on:
+#      - mysql-container
+#    networks:
+#      - spring-net
+#    restart: on-failure
+#
+#networks:
+#  spring-net:
+#    driver: bridge

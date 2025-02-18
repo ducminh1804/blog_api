@@ -37,6 +37,10 @@ public class JwtService {
 
 
     public String generateToken(String username) {
+
+        log.info(jwtSecret);
+
+
         Date now = new Date();
         Date expired = new Date(System.currentTimeMillis() + jwtExpirationInMs);
         HashMap<String, List> claims = new HashMap<>();
@@ -52,6 +56,7 @@ public class JwtService {
                 .setExpiration(expired)
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
+
     }
 
     public String extractUsername(String token) {

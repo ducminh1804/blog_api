@@ -1,0 +1,4 @@
+app:
+  jwtSecret: "B85sVEdg188jJ5oWpqLaJuX4m/ILnbspdbGxkwU9928/zbKU+k4Wslf3K9UOJzwCuVMwcJTKhJyKYkgoz39CSw=="
+  jwtExpirationInMs: 86400000
+  jwtRefreshExpirationInMs: 604800000
