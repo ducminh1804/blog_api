@@ -2,7 +2,7 @@ package com.ducminh.blogapi.service;
 
 import com.ducminh.blogapi.entity.InvalidToken;
 import com.ducminh.blogapi.exception.AppException;
-import com.ducminh.blogapi.exception.ErrorCode;
+import com.ducminh.blogapi.constant.ErrorCode;
 import com.ducminh.blogapi.mapper.RoleMapper;
 import com.ducminh.blogapi.repository.InvalidTokenRepository;
 import com.ducminh.blogapi.repository.UserRepository;

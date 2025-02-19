@@ -1,14 +1,11 @@
 package com.ducminh.blogapi.service;
 
 import com.ducminh.blogapi.dto.request.PermissionRequest;
-import com.ducminh.blogapi.dto.request.UserCreationRequest;
 import com.ducminh.blogapi.dto.response.PermissionResponse;
 import com.ducminh.blogapi.entity.Permission;
-import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.exception.AppException;
-import com.ducminh.blogapi.exception.ErrorCode;
+import com.ducminh.blogapi.constant.ErrorCode;
 import com.ducminh.blogapi.mapper.PermissionMapper;
-import com.ducminh.blogapi.mapper.UserMapper;
 import com.ducminh.blogapi.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

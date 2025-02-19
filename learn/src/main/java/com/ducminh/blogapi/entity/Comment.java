@@ -20,6 +20,12 @@ public class Comment extends DateAudit {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "vote_up")
+    private int voteUp;
+
+    @Column(name = "vote_down")
+    private int voteDown;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

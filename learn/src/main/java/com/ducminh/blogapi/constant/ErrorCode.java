@@ -1,4 +1,4 @@
-package com.ducminh.blogapi.exception;
+package com.ducminh.blogapi.constant;
 
 import lombok.Data;
 

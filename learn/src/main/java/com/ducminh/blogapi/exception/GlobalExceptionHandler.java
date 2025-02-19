@@ -1,12 +1,10 @@
 package com.ducminh.blogapi.exception;
 
+import com.ducminh.blogapi.constant.ErrorCode;
 import com.ducminh.blogapi.dto.response.ApiResponse;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;

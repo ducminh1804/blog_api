@@ -6,7 +6,7 @@ import com.ducminh.blogapi.entity.Permission;
 import com.ducminh.blogapi.entity.Role;
 import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.exception.AppException;
-import com.ducminh.blogapi.exception.ErrorCode;
+import com.ducminh.blogapi.constant.ErrorCode;
 import com.ducminh.blogapi.mapper.RoleMapper;
 import com.ducminh.blogapi.repository.PermissionRepository;
 import com.ducminh.blogapi.repository.RoleRepository;

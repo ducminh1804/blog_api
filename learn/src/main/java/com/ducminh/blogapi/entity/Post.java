@@ -1,8 +1,10 @@
 package com.ducminh.blogapi.entity;
 
 import com.ducminh.blogapi.entity.audit.UserAudit;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "posts")
-
+@Builder
 public class Post extends UserAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,6 +31,15 @@ public class Post extends UserAudit {
     @Column(name = "body")
     private String body;
 
+    @Column(name = "kind")
+    private String kind;
+
+    @Column(name = "vote_up")
+    private int upVoted;
+
+    @Column(name = "vote_down")
+    private int downVoted;
+
     @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
@@ -36,9 +47,6 @@ public class Post extends UserAudit {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
