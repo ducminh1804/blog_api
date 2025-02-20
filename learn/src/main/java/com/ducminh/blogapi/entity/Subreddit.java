@@ -1,5 +1,6 @@
 package com.ducminh.blogapi.entity;
 
+import com.ducminh.blogapi.constant.PrivacyEnum;
 import com.ducminh.blogapi.entity.audit.UserAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -26,8 +27,9 @@ public class Subreddit extends UserAudit {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "privacy")
-    private String privacy;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "privacy", nullable = false)
+    private PrivacyEnum privacy;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "subreddits")
