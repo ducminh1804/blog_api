@@ -5,9 +5,16 @@ import com.ducminh.blogapi.dto.response.FollowResponse;
 import com.ducminh.blogapi.entity.Follow;
 import com.ducminh.blogapi.entity.FollowId;
 import com.ducminh.blogapi.repository.FollowRepository;
+import com.ducminh.blogapi.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -15,10 +22,23 @@ public class FollowService {
     @Autowired
     private FollowRepository followRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public void create(FollowRequest request) {
         Follow follow = new Follow();
         follow.setId(new FollowId(request.getFollowingId(), request.getFollowerId()));
         followRepository.save(follow);
     }
 
+    public List<FollowResponse> getAllFollowerById(Principal principal) {
+        String userId = userRepository.findByUsername(principal.getName()).get().getId();
+        List<FollowResponse> followResponses = followRepository.findAllFollowerById(userId)
+                .map(list -> list.stream()
+                        .map(item -> new FollowResponse(item.getFollowingId(), item.getUsername()))
+                        .collect(Collectors.toList())
+                )
+                .orElse(Collections.emptyList());
+        return followResponses;
+    }
 }

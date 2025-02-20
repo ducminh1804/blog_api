@@ -31,7 +31,16 @@ public class Subreddit extends UserAudit {
     @Column(name = "privacy", nullable = false)
     private PrivacyEnum privacy;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "subreddits")
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_subreddits",
+            joinColumns = @JoinColumn(name = "subreddit_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private Set<User> users = new HashSet<>();
+
+//    @JsonIgnore
+//    @ManyToMany(mappedBy = "subreddits")
+//    private Set<User> users = new HashSet<>();
 }

@@ -1,4 +1,4 @@
-package com.ducminh.blogapi.dto.response;
+package com.ducminh.blogapi.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FollowResponse {
-    private String followingId;
-    private String username;
+public class UserSubredditRequest {
+    private String subredditId;
 }
