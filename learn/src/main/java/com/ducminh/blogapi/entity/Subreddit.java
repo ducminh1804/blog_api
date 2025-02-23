@@ -33,6 +33,7 @@ public class Subreddit extends UserAudit {
 
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinTable(
             name = "users_subreddits",
             joinColumns = @JoinColumn(name = "subreddit_id"),

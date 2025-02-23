@@ -5,6 +5,7 @@ import com.ducminh.blogapi.dto.request.UserSubredditRequest;
 import com.ducminh.blogapi.dto.response.ApiResponse;
 import com.ducminh.blogapi.dto.response.SubredditResponse;
 import com.ducminh.blogapi.service.SubredditService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,4 +32,24 @@ public class SubredditController {
         ApiResponse<Void> apiResponse = ApiResponse.<Void>builder().build();
         return apiResponse;
     }
+
+    @GetMapping()
+    ApiResponse<SubredditResponse> getSubById(@RequestParam(name = "id", required = false) String id) {
+        SubredditResponse subredditResponse = subredditService.getSubredditById(id);
+        ApiResponse<SubredditResponse> apiResponse = ApiResponse.<SubredditResponse>builder()
+                .data(subredditResponse)
+                .build();
+        return apiResponse;
+    }
+
+    @DeleteMapping
+    ApiResponse<Void> leaveSubreddit(@RequestParam(name = "id") String id, Principal principal) {
+        subredditService.leaveSubreddit(id, principal);
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
+                .build();
+        return apiResponse;
+    }
+
+    ;
+
 }

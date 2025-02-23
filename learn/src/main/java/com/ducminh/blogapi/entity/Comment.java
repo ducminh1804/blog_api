@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -13,9 +16,12 @@ import lombok.NoArgsConstructor;
 @Table(name = "comments")
 public class Comment extends DateAudit {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private int id;
+
+    @Column(name = "parent_id")
+    private int parentId;
 
     @Column(name = "content")
     private String content;
@@ -33,4 +39,11 @@ public class Comment extends DateAudit {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @OneToMany(mappedBy = "accestor", cascade = CascadeType.ALL)
+    private Set<CommentClosure> accestors = new HashSet<>();
+
+    @OneToMany(mappedBy = "descendant", cascade = CascadeType.ALL)
+    private Set<CommentClosure> descendant = new HashSet<>();
+
 }

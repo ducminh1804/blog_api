@@ -71,14 +71,7 @@ public class User extends DateAudit {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
-
-    //    @ManyToMany(fetch = FetchType.EAGER)
-//    @JoinTable(
-//            name = "users_subreddits",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "subreddit_id")
-//    )
-//    private Set<Subreddit> subreddits = new HashSet<>();
+    
     @JsonIgnore
     @ManyToMany(mappedBy = "users")
     private Set<Subreddit> subreddits = new HashSet<>();

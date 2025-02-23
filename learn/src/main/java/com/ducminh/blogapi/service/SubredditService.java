@@ -1,10 +1,7 @@
 package com.ducminh.blogapi.service;
 
 import com.ducminh.blogapi.constant.ErrorCode;
-import com.ducminh.blogapi.dto.request.AuthenticationRequest;
-import com.ducminh.blogapi.dto.request.RefreshTokenRequest;
-import com.ducminh.blogapi.dto.request.SubredditRequest;
-import com.ducminh.blogapi.dto.request.UserSubredditRequest;
+import com.ducminh.blogapi.dto.request.*;
 import com.ducminh.blogapi.dto.response.AuthenticationResponse;
 import com.ducminh.blogapi.dto.response.SubredditResponse;
 import com.ducminh.blogapi.entity.Subreddit;
@@ -51,7 +48,18 @@ public class SubredditService {
         users.add(user);
         subredditRepository.save(subreddit);
     }
-    
+
+    public SubredditResponse getSubredditById(String id) {
+        Subreddit subreddit = subredditRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.INVALID_DATA));
+        return subredditMapper.toSubredditResponse(subreddit);
+    }
+
+    public void leaveSubreddit(String subredditId, Principal principal) {
+        Subreddit subreddit = subredditRepository.findById(subredditId).orElseThrow(() -> new AppException(ErrorCode.INVALID_DATA));
+        User user = userRepository.findByUsername(principal.getName()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        subreddit.getUsers().remove(user);
+        subredditRepository.save(subreddit);
+    }
 }
 
 
