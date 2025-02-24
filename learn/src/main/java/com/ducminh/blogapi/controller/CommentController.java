@@ -31,7 +31,7 @@ public class CommentController {
             @PathVariable String postId,
             @RequestParam(defaultValue = "0") int parentId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size) {
+            @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<CommentResponse> commentResponses = commentService.findByPostId(postId, parentId, pageable);
         ApiResponse<Page<CommentResponse>> apiResponse = ApiResponse.<Page<CommentResponse>>builder()

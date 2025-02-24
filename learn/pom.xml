@@ -139,6 +139,13 @@
             <version>2.2.4</version>
         </dependency>
 
+        <!--      socket  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <!--        socket-->
+
     </dependencies>
 
     <build>
