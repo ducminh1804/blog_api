@@ -1,5 +1,6 @@
 package com.ducminh.blogapi.controller;
 
+import com.ducminh.blogapi.config.StompPrincipal;
 import com.ducminh.blogapi.dto.request.ChatMessage;
 import com.ducminh.blogapi.dto.request.ChatRequest;
 import com.ducminh.blogapi.dto.request.MessageRequest;
@@ -35,7 +36,6 @@ public class ChatController {
         Principal principal = accessor.getUser();
         String username = principal.getName();
         String senderId = userRepository.findByUsername(username).get().getId();
-        message.setSender(senderId);
 
         simpMessagingTemplate.convertAndSend("/topic/" + roomId, message);
 
@@ -48,16 +48,17 @@ public class ChatController {
         return message;
     }
 
-    @MessageMapping("/chat/private/{recipent}")
-    public ChatMessage sendPrivateMessage(@DestinationVariable String recipent, SimpMessageHeaderAccessor accessor, @Payload ChatMessage message) {
-        Principal principal = accessor.getUser();
+    @MessageMapping("/chat/private/{recipentId}")
+    public ChatMessage sendPrivateMessage(@DestinationVariable String recipentId, SimpMessageHeaderAccessor accessor, @Payload ChatMessage message) {
+        Principal principal = (StompPrincipal) accessor.getUser();
         String username = principal.getName();
-        String senderId = userRepository.findByUsername(username).get().getId();
-        String recipentId = userRepository.findByUsername(recipent).get().getId();
-        simpMessagingTemplate.convertAndSendToUser(recipent, "/queue/messages", message);
+        log.info("userId {}", username);
+//        String senderId = message.getSenderId();
+//        String recipentId = userRepository.findByUsername(recipent).get().getId();
+        simpMessagingTemplate.convertAndSendToUser(recipentId, "/queue/messages", message);
 
         MessageRequest messageRequest = MessageRequest.builder()
-                .senderId(senderId)
+                .senderId(message.getSenderId())
                 .recipentId(recipentId)
                 .content(message.getContent())
                 .build();

@@ -25,6 +25,7 @@ public class MessageService {
     private MessageMapper messageMapper;
 
     public void saveMessages(MessageRequest request) {
+        log.info("request info: {}", request.toString());
         Message message = messageMapper.toMessage(request);
         User user = userRepository.findById(request.getSenderId()).get();
         message.setUser(user);
