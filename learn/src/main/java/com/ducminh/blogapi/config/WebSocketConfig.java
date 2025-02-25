@@ -1,5 +1,6 @@
 package com.ducminh.blogapi.config;
 
+import com.ducminh.blogapi.repository.UserRepository;
 import com.ducminh.blogapi.service.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private JwtService jwtService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Override
@@ -56,54 +60,28 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setUserDestinationPrefix("/user");
     }
 
-    //    @Override
-//    public void configureClientInboundChannel(ChannelRegistration registration) {
-//        registration.interceptors(new ChannelInterceptor() {
-//            @Override
-//            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-//                StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-//                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-//                    String token = accessor.getFirstNativeHeader("Authorization");
-//                    if (token != null && token.startsWith("Bearer")) {
-//                        token = token.substring(7);
-//                        String username = jwtService.extractUsername(token);
-//                        List<SimpleGrantedAuthority> grantedAuthorities = jwtService.extractAuthority(token);
-//                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-//                        Principal authenticationToken = new UsernamePasswordAuthenticationToken(
-//                                userDetails, userDetails.getPassword(), grantedAuthorities);
-//                        log.info("Principal: {}", authenticationToken.toString());
-//                        accessor.setUser(authenticationToken);
-//                        accessor.getSessionAttributes().put("USER_SESSION_ATTR", username);
-//
-//                        log.info("Accessor: {}", accessor.getUser().getName());
-//                    }
-//                }
-//                log.info("WebSocket preSend triggered for command: {}", accessor.getCommand());
-//                return message;
-//            }
-//        });
-//    }
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
-                StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-
+                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 if (StompCommand.CONNECT.equals(accessor.getCommand())) {
                     String token = accessor.getFirstNativeHeader("Authorization");
-
-                    if (token != null && token.startsWith("Bearer ")) {
+                    if (token != null && token.startsWith("Bearer")) {
                         token = token.substring(7);
                         String username = jwtService.extractUsername(token);
+                        List<SimpleGrantedAuthority> grantedAuthorities = jwtService.extractAuthority(token);
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                        Principal authenticationToken = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, grantedAuthorities);
+                        log.info("Principal: {}", authenticationToken.toString());
+                        accessor.setUser(authenticationToken);
 
-                        // Lưu username vào session attributes thay vì set User
-                        accessor.getSessionAttributes().put("USER_SESSION_ATTR", username);
-
-                        log.info("User connected: {}", username);
+                        log.info("Accessor: {}", accessor.getUser().getName());
                     }
                 }
-
+                log.info("WebSocket preSend triggered for command: {}", accessor.getCommand());
                 return message;
             }
         });
