@@ -19,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -89,5 +91,15 @@ public class PostService {
         return postResponse;
     }
 
+    public List<PostResponse> getPostsPagination(Instant createAt) {
+        List<PostResponse> postResponses = postRepository.getPostsPagination(createAt)
+                .stream().map(postMapper::toPostResponse).collect(Collectors.toList());
+        return postResponses;
+    }
+
+    public PostResponse getPostsById(String postId) {
+        PostResponse postResponses = postMapper.toPostResponse(postRepository.findById(postId).get());
+        return postResponses;
+    }
 }
 

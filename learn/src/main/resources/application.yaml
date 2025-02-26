@@ -11,6 +11,13 @@ spring:
       ddl-auto: update
     show-sql: true
     auditor-aware-ref: auditorAwareImpl
+  data:
+    redis:
+      port: 6379
+      host: localhost
+#      database: 0
+#      timeout: 60
+#      password: mypass
 
 app:
   jwtSecret: ${JWT_SECRET}

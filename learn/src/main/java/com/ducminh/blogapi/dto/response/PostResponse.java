@@ -23,6 +23,4 @@ public class PostResponse {
     private Instant createdAt;
     private int upVoted;
     private int downVoted;
-
-
 }

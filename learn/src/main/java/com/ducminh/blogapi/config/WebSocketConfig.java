@@ -60,31 +60,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setUserDestinationPrefix("/user");
     }
 
-    //    @Override
-//    public void configureClientInboundChannel(ChannelRegistration registration) {
-//        registration.interceptors(new ChannelInterceptor() {
-//            @Override
-//            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-//                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-//                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-//                    String token = accessor.getFirstNativeHeader("Authorization");
-//                    if (token != null && token.startsWith("Bearer")) {
-//                        token = token.substring(7);
-//                        String username = jwtService.extractUsername(token);
-//                        List<SimpleGrantedAuthority> grantedAuthorities = jwtService.extractAuthority(token);
-//                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-//                        Principal authenticationToken = new UsernamePasswordAuthenticationToken(
-//                                userDetails, null, grantedAuthorities);
-//                        log.info("Principal: {}", authenticationToken.toString());
-//                        accessor.setUser(authenticationToken);
-//                        log.info("Accessor: {}", accessor.getUser().getName());
-//                    }
-//                }
-//                log.info("WebSocket preSend triggered for command: {}", accessor.getCommand());
-//                return message;
-//            }
-//        });
-//    }
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
@@ -98,8 +73,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         String username = jwtService.extractUsername(token);
                         List<SimpleGrantedAuthority> grantedAuthorities = jwtService.extractAuthority(token);
                         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-
                         String userId = userRepository.findByUsername(username).get().getId();
                         Principal authenticationToken = new StompPrincipal(userId);
                         log.info("Principal: {}", authenticationToken.toString());

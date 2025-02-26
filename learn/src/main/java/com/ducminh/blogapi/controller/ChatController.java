@@ -53,8 +53,6 @@ public class ChatController {
         Principal principal = (StompPrincipal) accessor.getUser();
         String username = principal.getName();
         log.info("userId {}", username);
-//        String senderId = message.getSenderId();
-//        String recipentId = userRepository.findByUsername(recipent).get().getId();
         simpMessagingTemplate.convertAndSendToUser(recipentId, "/queue/messages", message);
 
         MessageRequest messageRequest = MessageRequest.builder()

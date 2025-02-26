@@ -14,6 +14,8 @@ import com.ducminh.blogapi.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +29,7 @@ import java.util.Set;
 
 @Service
 @Slf4j
+@EnableCaching
 public class UserService {
     @Autowired
     private UserRepository userRepository;
@@ -55,13 +58,15 @@ public class UserService {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @Cacheable("users")
     public List<User> getAll() {
         log.info("vao dc method");
         return userRepository.findAll();
     }
 
     //    @PreAuthorize("hasAnyAuthority('APROVE_POST')")
-    @PostAuthorize("returnObject.username == authentication.getName()")
+//    @PostAuthorize("returnObject.username == authentication.getName()")
+    @Cacheable("user")
     public UserResponse findUserById(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));//tim user
         UserResponse userResponse = Mappers.getMapper(UserMapper.class).toUserResponse(user);//

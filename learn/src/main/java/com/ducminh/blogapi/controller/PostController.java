@@ -3,6 +3,7 @@ package com.ducminh.blogapi.controller;
 import com.ducminh.blogapi.dto.request.PostRequest;
 import com.ducminh.blogapi.dto.response.ApiResponse;
 import com.ducminh.blogapi.dto.response.PostResponse;
+import com.ducminh.blogapi.entity.Post;
 import com.ducminh.blogapi.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -62,4 +64,23 @@ public class PostController {
         return apiResponse;
     }
 
+
+    @GetMapping("")
+    public ApiResponse<List<PostResponse>> getPostsPagination(@RequestParam(required = false) Instant createAt) {
+
+        List<PostResponse> postResponses = postService.getPostsPagination(createAt);
+
+        return ApiResponse.<List<PostResponse>>builder()
+                .data(postResponses)
+                .build();
+    }
+
+    @GetMapping("/{postId}")
+    public ApiResponse<PostResponse> getPostById(@PathVariable String postId) {
+        PostResponse postResponse = postService.getPostsById(postId);
+        ApiResponse<PostResponse> apiResponse = ApiResponse.<PostResponse>builder()
+                .data(postResponse)
+                .build();
+        return apiResponse;
+    }
 }
