@@ -3,10 +3,7 @@ package com.ducminh.blogapi.entity;
 import com.ducminh.blogapi.entity.audit.UserAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,11 +11,12 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "posts")
 @Builder
+@Getter
+@Setter
 public class Post extends UserAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -55,4 +53,19 @@ public class Post extends UserAudit {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", kind='" + kind + '\'' +
+                ", upVoted=" + upVoted +
+                ", downVoted=" + downVoted +
+                ", comments=" + comments +
+                ", user=" + user +
+                ", tags=" + tags +
+                '}';
+    }
 }

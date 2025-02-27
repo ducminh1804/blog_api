@@ -15,9 +15,9 @@ spring:
     redis:
       port: 6379
       host: localhost
-#      database: 0
-#      timeout: 60
-#      password: mypass
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
 
 app:
   jwtSecret: ${JWT_SECRET}

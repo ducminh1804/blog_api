@@ -1,6 +1,13 @@
 package com.ducminh.blogapi.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -18,6 +25,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+@EnableCaching
 @Configuration
 public class RedisConfig {
     @Value("${spring.data.redis.host}")
@@ -42,10 +50,14 @@ public class RedisConfig {
     @Bean
 //    day la cau hinh custom
     public RedisCacheConfiguration defaultCacheConfig() {
+//day la vi cuu tinh : https://datmt.com/backend/fix-localdatetime-serialization-with-redis-spring-boot-cache/
+        var jacksonSerializer = new GenericJackson2JsonRedisSerializer(objectMapper());
+        var valueSerializer = RedisSerializationContext.SerializationPair.fromSerializer(jacksonSerializer);
+
         return RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(10))  // TTL mặc định: 10 phút
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))//chuyen key thanh utf8
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))//chuyen value thanh json
+                .serializeValuesWith(valueSerializer)//chuyen value thanh json
                 .disableCachingNullValues(); // Không cache giá trị null
     }
 
@@ -63,4 +75,17 @@ public class RedisConfig {
                 .transactionAware() // Hỗ trợ giao dịch (nếu cần)
                 .build();
     }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return JsonMapper.builder()
+                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
+                .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                .configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true)
+                .addModule(new JavaTimeModule())
+                .findAndAddModules()
+                .build();
+    }
+
 }

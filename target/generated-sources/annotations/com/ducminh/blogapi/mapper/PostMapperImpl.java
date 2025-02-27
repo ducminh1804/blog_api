@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-02-26T23:18:10+0700",
+    date = "2025-02-27T22:38:06+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -48,7 +48,6 @@ public class PostMapperImpl implements PostMapper {
             postResponse.setTags( new LinkedHashSet<Tag>( set ) );
         }
         postResponse.setKind( post.getKind() );
-        postResponse.setCreatedAt( post.getCreatedAt() );
         postResponse.setUpVoted( post.getUpVoted() );
         postResponse.setDownVoted( post.getDownVoted() );
 

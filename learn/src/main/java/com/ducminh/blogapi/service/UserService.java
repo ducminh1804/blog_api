@@ -29,7 +29,6 @@ import java.util.Set;
 
 @Service
 @Slf4j
-@EnableCaching
 public class UserService {
     @Autowired
     private UserRepository userRepository;
@@ -66,7 +65,7 @@ public class UserService {
 
     //    @PreAuthorize("hasAnyAuthority('APROVE_POST')")
 //    @PostAuthorize("returnObject.username == authentication.getName()")
-//    @Cacheable("user")
+    @Cacheable("user")
     public UserResponse findUserById(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));//tim user
         UserResponse userResponse = Mappers.getMapper(UserMapper.class).toUserResponse(user);//

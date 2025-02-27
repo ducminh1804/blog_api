@@ -1,10 +1,7 @@
 package com.ducminh.blogapi.dto.response;
 
 import com.ducminh.blogapi.entity.Tag;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.Set;
@@ -13,6 +10,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class PostResponse {
     private String id;
     private String title;

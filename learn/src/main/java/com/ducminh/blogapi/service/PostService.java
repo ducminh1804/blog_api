@@ -11,9 +11,13 @@ import com.ducminh.blogapi.mapper.PostMapper;
 import com.ducminh.blogapi.repository.PostRepository;
 import com.ducminh.blogapi.repository.TagRepository;
 import com.ducminh.blogapi.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +29,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@EnableCaching
+
 public class PostService {
     @Autowired
     private PostRepository postRepository;
@@ -97,9 +103,15 @@ public class PostService {
         return postResponses;
     }
 
+    @Cacheable("post")
     public PostResponse getPostsById(String postId) {
-        PostResponse postResponses = postMapper.toPostResponse(postRepository.findById(postId).get());
-        return postResponses;
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        log.info("createAt {}", post.getCreatedAt());
+        PostResponse postResponse = postMapper.toPostResponse(post);
+        postResponse.setUsername(post.getUser().getUsername());
+        postResponse.setCreatedAt(post.getCreatedAt());
+        return postResponse;
     }
+
 }
 
