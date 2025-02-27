@@ -34,16 +34,18 @@ public class RedisConfig {
     }
 
 //    @Bean
+    //day la cau hinh co ban
 //    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
 //        return RedisCacheManager.create(connectionFactory);
 //    }
 
     @Bean
+//    day la cau hinh custom
     public RedisCacheConfiguration defaultCacheConfig() {
         return RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(10))  // TTL mặc định: 10 phút
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))//chuyen key thanh utf8
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))//chuyen value thanh json
                 .disableCachingNullValues(); // Không cache giá trị null
     }
 
