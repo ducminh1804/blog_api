@@ -1,5 +1,6 @@
 package com.ducminh.blogapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;

@@ -21,5 +21,5 @@ public interface PostMapper {
     @Mapping(target = "username", ignore = true)
     PostResponse toPostResponse(Post post);
 
-    PostEs toPostEs(Post post);
+    PostEs toPostEs(PostResponse response);
 }

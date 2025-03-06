@@ -16,30 +16,50 @@ import java.io.IOException;
 @Service
 @Slf4j
 public class SubscriberMessage implements MessageListener {
+
     @Autowired
     private ElasticsearchService elasticsearchService;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            MessageRedisType<PostEs> messageType = objectMapper.readValue(message.getBody(), new TypeReference<MessageRedisType<PostEs>>() {
-            });
+            // Sử dụng phương thức tổng quát để xử lý việc giải mã
+            MessageRedisType<?> messageType = deserializeMessage(message);
+
             String type = messageType.getType();
             Object value = messageType.getValue();
-            PostEs postEs = messageType.getValue();
+
             log.info("type {}", type);
-            log.info("value {}", value);
+            log.info("value {}", value.getClass().getName());
+
             switch (type) {
-                case "Post":
-                    elasticsearchService.save(postEs);
+                case "PostApi":
+                    elasticsearchService.save(value);
                     log.info("success {}", "insert to es: " + value);
+                    break;
                 default:
                     break;
             }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+//    private <T> ReturnType methodName(Parameters) { ... }
+
+    private <T> MessageRedisType<T> deserializeMessage(Message message) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(message.getBody(), new TypeReference<MessageRedisType<T>>() {
+        });
+    }
 }
+
+//{
+//        "type": "PostApi",
+//        "value": {
+//        "id": 1,
+//        "title": "My Post"
+//        }
+//        }
+//MessageRedisType<PostEs> message = deserializeMessage(jsonData); ===>  MessageRedisType value = MessageRedisType(type="PostApi", value=LinkedHashMap);
+// bi chuyen thanh linkedhashmap, dung TypeReference<MessageRedisType<T>>() {} de giu nguyen kieu du lieu

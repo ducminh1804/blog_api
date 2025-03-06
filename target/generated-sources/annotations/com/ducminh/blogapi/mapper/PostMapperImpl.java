@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-06T14:58:26+0700",
+    date = "2025-03-06T22:12:26+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -56,16 +56,16 @@ public class PostMapperImpl implements PostMapper {
     }
 
     @Override
-    public PostEs toPostEs(Post post) {
-        if ( post == null ) {
+    public PostEs toPostEs(PostResponse response) {
+        if ( response == null ) {
             return null;
         }
 
         PostEs.PostEsBuilder postEs = PostEs.builder();
 
-        postEs.id( post.getId() );
-        postEs.title( post.getTitle() );
-        postEs.body( post.getBody() );
+        postEs.id( response.getId() );
+        postEs.title( response.getTitle() );
+        postEs.body( response.getBody() );
 
         return postEs.build();
     }

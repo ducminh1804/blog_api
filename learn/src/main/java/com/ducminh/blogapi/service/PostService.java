@@ -78,9 +78,9 @@ public class PostService {
         PostResponse postResponse = postMapper.toPostResponse(postRepository.save(post));
         postResponse.setUsername(user.getUsername());
 
-        PostEs postEs = postMapper.toPostEs(post);
+        PostEs postEs = postMapper.toPostEs(postResponse);
         MessageRedisType<PostEs> postEsMessageRedisType = MessageRedisType.<PostEs>builder()
-                .type("Post")
+                .type("PostApi")
                 .value(postEs)
                 .build();
         publisherMessage.send(postEsMessageRedisType);
