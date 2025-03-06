@@ -173,6 +173,17 @@
         </dependency>
         <!--        -->
 
+        <!-- Spring Data ElasticSearch -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+        <!--        es log-->
+        <dependency>
+            <groupId>com.internetitem</groupId>
+            <artifactId>logback-elasticsearch-appender</artifactId>
+            <version>1.6</version>
+        </dependency>
 
     </dependencies>
 

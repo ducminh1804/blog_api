@@ -2,26 +2,18 @@ package com.ducminh.blogapi.service;
 
 import com.ducminh.blogapi.constant.ErrorCode;
 import com.ducminh.blogapi.dto.request.*;
-import com.ducminh.blogapi.dto.response.AuthenticationResponse;
 import com.ducminh.blogapi.dto.response.SubredditResponse;
 import com.ducminh.blogapi.entity.Subreddit;
 import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.exception.AppException;
 import com.ducminh.blogapi.mapper.SubredditMapper;
-import com.ducminh.blogapi.repository.SubredditRepository;
-import com.ducminh.blogapi.repository.UserRepository;
+import com.ducminh.blogapi.repository.jpa.SubredditRepository;
+import com.ducminh.blogapi.repository.jpa.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.Optional;
 import java.util.Set;
 
 @Service

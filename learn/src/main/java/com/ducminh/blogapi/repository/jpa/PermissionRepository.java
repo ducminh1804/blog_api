@@ -1,4 +1,4 @@
-package com.ducminh.blogapi.repository;
+package com.ducminh.blogapi.repository.jpa;
 
 import com.ducminh.blogapi.entity.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;

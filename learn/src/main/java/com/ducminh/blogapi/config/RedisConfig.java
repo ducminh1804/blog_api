@@ -1,23 +1,32 @@
 package com.ducminh.blogapi.config;
 
+import com.ducminh.blogapi.constant.Topic;
+import com.ducminh.blogapi.service.SubscriberMessage;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -28,64 +37,57 @@ import java.util.Map;
 @EnableCaching
 @Configuration
 public class RedisConfig {
-    @Value("${spring.data.redis.host}")
-    private String redisHost;
 
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
+    @Autowired
+    private SubscriberMessage subscriberMessage;
 
-    @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHost, redisPort);
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
 
-        return new LettuceConnectionFactory(configuration);
+
+    //jackson khac voi genericjackson o cho: json dc tao ra k co dia chi @class entity,
+    // jackson: {'id':123} ---- genericjackson: ['@class':'com.entity.post',{'id':123}]
+    @Bean // dinh nghia template, 1 impl cua redis operation
+    @Primary
+    RedisTemplate<String, String> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());//luu key dang string
+        template.setValueSerializer(new Jackson2JsonRedisSerializer<Object>(Object.class));//luu value dang json
+        return template;
     }
 
-//    @Bean
-    //day la cau hinh co ban
-//    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-//        return RedisCacheManager.create(connectionFactory);
-//    }
-
+    //    cau hinh caching
     @Bean
-//    day la cau hinh custom
-    public RedisCacheConfiguration defaultCacheConfig() {
-//day la vi cuu tinh : https://datmt.com/backend/fix-localdatetime-serialization-with-redis-spring-boot-cache/
-        var jacksonSerializer = new GenericJackson2JsonRedisSerializer(objectMapper());
-        var valueSerializer = RedisSerializationContext.SerializationPair.fromSerializer(jacksonSerializer);
-
-        return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10))  // TTL mặc định: 10 phút
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))//chuyen key thanh utf8
-                .serializeValuesWith(valueSerializer)//chuyen value thanh json
+    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(1))// Hết hạn sau 60 giây
+                .computePrefixWith(cacheName -> "redis::" + cacheName)
                 .disableCachingNullValues(); // Không cache giá trị null
-    }
 
-    @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-        // Tạo cấu hình riêng cho từng loại cache
-        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-
-//        cacheConfigurations.put("users", defaultCacheConfig().entryTtl(Duration.ofMinutes(5)));  // Cache `users` sống 5 phút
-//        cacheConfigurations.put("products", defaultCacheConfig().entryTtl(Duration.ofHours(1))); // Cache `products` sống 1 giờ
-
-        return RedisCacheManager.builder(redisConnectionFactory)
-                .cacheDefaults(defaultCacheConfig())      // Cấu hình mặc định: TTL 10 phút
-                .withInitialCacheConfigurations(cacheConfigurations) // Áp dụng cấu hình riêng
-                .transactionAware() // Hỗ trợ giao dịch (nếu cần)
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(cacheConfiguration)
+                .transactionAware()
                 .build();
     }
 
+
     @Bean
-    public ObjectMapper objectMapper() {
-        return JsonMapper.builder()
-                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
-                .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                .configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true)
-                .addModule(new JavaTimeModule())
-                .findAndAddModules()
-                .build();
+    MessageListenerAdapter messageListener() {
+        return new MessageListenerAdapter(subscriberMessage);
+    }
+
+    @Bean
+    ChannelTopic topic() {
+        return new ChannelTopic(Topic.Post.name());
+    }
+
+    @Bean
+    RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(messageListener(), topic());
+        return container;
     }
 
 }

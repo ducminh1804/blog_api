@@ -1,4 +1,4 @@
-package com.ducminh.blogapi.repository;
+package com.ducminh.blogapi.repository.jpa;
 
 import com.ducminh.blogapi.entity.User;
 import jakarta.transaction.Transactional;
@@ -13,6 +13,6 @@ public interface UserRepository extends JpaRepository<User, String> {
     boolean existsByEmail(String email);
 
     boolean existsByUsername(String username);
-    
+
     Optional<User> findByUsername(String username);
 }

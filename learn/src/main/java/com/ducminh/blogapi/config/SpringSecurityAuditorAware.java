@@ -1,11 +1,8 @@
 package com.ducminh.blogapi.config;
 
-import com.ducminh.blogapi.entity.User;
-import com.ducminh.blogapi.repository.UserRepository;
+import com.ducminh.blogapi.repository.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

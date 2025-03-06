@@ -1,13 +1,10 @@
 package com.ducminh.blogapi.entity;
 
 import com.ducminh.blogapi.entity.audit.UserAudit;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -44,7 +41,6 @@ public class Post extends UserAudit {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

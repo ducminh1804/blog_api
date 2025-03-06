@@ -4,8 +4,8 @@ import com.ducminh.blogapi.dto.request.FollowRequest;
 import com.ducminh.blogapi.dto.response.FollowResponse;
 import com.ducminh.blogapi.entity.Follow;
 import com.ducminh.blogapi.entity.FollowId;
-import com.ducminh.blogapi.repository.FollowRepository;
-import com.ducminh.blogapi.repository.UserRepository;
+import com.ducminh.blogapi.repository.jpa.FollowRepository;
+import com.ducminh.blogapi.repository.jpa.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

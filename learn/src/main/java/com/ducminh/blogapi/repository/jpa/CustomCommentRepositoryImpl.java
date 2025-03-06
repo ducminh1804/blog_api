@@ -1,9 +1,8 @@
-package com.ducminh.blogapi.repository;
+package com.ducminh.blogapi.repository.jpa;
 
 import com.ducminh.blogapi.dto.request.CommentRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 
 public class CustomCommentRepositoryImpl implements CustomCommentRepository {

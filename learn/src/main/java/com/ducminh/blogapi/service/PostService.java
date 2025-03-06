@@ -1,18 +1,18 @@
 package com.ducminh.blogapi.service;
 
+import com.ducminh.blogapi.constant.MessageRedisType;
 import com.ducminh.blogapi.dto.request.PostRequest;
 import com.ducminh.blogapi.dto.response.PostResponse;
 import com.ducminh.blogapi.entity.Post;
+import com.ducminh.blogapi.entity.PostEs;
 import com.ducminh.blogapi.entity.Tag;
 import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.exception.AppException;
 import com.ducminh.blogapi.constant.ErrorCode;
 import com.ducminh.blogapi.mapper.PostMapper;
-import com.ducminh.blogapi.repository.PostRepository;
-import com.ducminh.blogapi.repository.TagRepository;
-import com.ducminh.blogapi.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ducminh.blogapi.repository.jpa.PostRepository;
+import com.ducminh.blogapi.repository.jpa.TagRepository;
+import com.ducminh.blogapi.repository.jpa.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +42,8 @@ public class PostService {
     private PostMapper postMapper;
     @Autowired
     private CloudinaryService cloudinaryService;
+    @Autowired
+    private PublisherMessage publisherMessage;
 
     public PostResponse createPost(PostRequest request, Principal principal) {
         List<Tag> tags = tagRepository.findAllByNameIn(new ArrayList<>(request.getTags()));
@@ -75,6 +77,14 @@ public class PostService {
                 .build();
         PostResponse postResponse = postMapper.toPostResponse(postRepository.save(post));
         postResponse.setUsername(user.getUsername());
+
+        PostEs postEs = postMapper.toPostEs(post);
+        MessageRedisType<PostEs> postEsMessageRedisType = MessageRedisType.<PostEs>builder()
+                .type("Post")
+                .value(postEs)
+                .build();
+        publisherMessage.send(postEsMessageRedisType);
+        log.info("postes {}", postEs.toString());
         return postResponse;
     }
 

@@ -6,7 +6,7 @@ import com.ducminh.blogapi.entity.Permission;
 import com.ducminh.blogapi.exception.AppException;
 import com.ducminh.blogapi.constant.ErrorCode;
 import com.ducminh.blogapi.mapper.PermissionMapper;
-import com.ducminh.blogapi.repository.PermissionRepository;
+import com.ducminh.blogapi.repository.jpa.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

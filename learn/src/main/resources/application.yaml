@@ -15,9 +15,16 @@ spring:
     redis:
       port: 6379
       host: localhost
+    elasticsearch:
+      repositories:
+        enabled: true
+  
   jackson:
     serialization:
       write-dates-as-timestamps: false
+
+cluster:
+  node: localhost:9200
 
 app:
   jwtSecret: ${JWT_SECRET}
@@ -29,3 +36,6 @@ cloud:
   key: ${CLOUD_KEY}
   secret: ${CLOUD_SECRET}
 #    url: ${DBMS_CONNECTION:jdbc:mysql://mysql-container:3306/blogdb}
+logging:
+  level:
+    tracer: TRACE

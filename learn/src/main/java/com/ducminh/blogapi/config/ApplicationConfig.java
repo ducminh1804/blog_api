@@ -3,7 +3,7 @@ package com.ducminh.blogapi.config;
 import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.exception.AppException;
 import com.ducminh.blogapi.constant.ErrorCode;
-import com.ducminh.blogapi.repository.UserRepository;
+import com.ducminh.blogapi.repository.jpa.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

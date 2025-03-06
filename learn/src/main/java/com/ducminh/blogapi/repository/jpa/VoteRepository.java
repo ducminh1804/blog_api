@@ -1,4 +1,4 @@
-package com.ducminh.blogapi.repository;
+package com.ducminh.blogapi.repository.jpa;
 
 import com.ducminh.blogapi.constant.VoteEnum;
 import com.ducminh.blogapi.entity.Vote;

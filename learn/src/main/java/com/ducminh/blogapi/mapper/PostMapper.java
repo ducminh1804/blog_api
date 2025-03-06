@@ -3,6 +3,7 @@ package com.ducminh.blogapi.mapper;
 import com.ducminh.blogapi.dto.request.PostRequest;
 import com.ducminh.blogapi.dto.response.PostResponse;
 import com.ducminh.blogapi.entity.Post;
+import com.ducminh.blogapi.entity.PostEs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.mapstruct.Mapper;
@@ -20,4 +21,5 @@ public interface PostMapper {
     @Mapping(target = "username", ignore = true)
     PostResponse toPostResponse(Post post);
 
+    PostEs toPostEs(Post post);
 }

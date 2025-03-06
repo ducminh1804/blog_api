@@ -3,6 +3,7 @@ package com.ducminh.blogapi.mapper;
 import com.ducminh.blogapi.dto.request.PostRequest;
 import com.ducminh.blogapi.dto.response.PostResponse;
 import com.ducminh.blogapi.entity.Post;
+import com.ducminh.blogapi.entity.PostEs;
 import com.ducminh.blogapi.entity.Tag;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-02-27T22:38:06+0700",
+    date = "2025-03-06T14:58:26+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 @Component
@@ -52,5 +53,20 @@ public class PostMapperImpl implements PostMapper {
         postResponse.setDownVoted( post.getDownVoted() );
 
         return postResponse;
+    }
+
+    @Override
+    public PostEs toPostEs(Post post) {
+        if ( post == null ) {
+            return null;
+        }
+
+        PostEs.PostEsBuilder postEs = PostEs.builder();
+
+        postEs.id( post.getId() );
+        postEs.title( post.getTitle() );
+        postEs.body( post.getBody() );
+
+        return postEs.build();
     }
 }

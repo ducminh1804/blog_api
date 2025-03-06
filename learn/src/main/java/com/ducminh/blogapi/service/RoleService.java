@@ -8,9 +8,9 @@ import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.exception.AppException;
 import com.ducminh.blogapi.constant.ErrorCode;
 import com.ducminh.blogapi.mapper.RoleMapper;
-import com.ducminh.blogapi.repository.PermissionRepository;
-import com.ducminh.blogapi.repository.RoleRepository;
-import com.ducminh.blogapi.repository.UserRepository;
+import com.ducminh.blogapi.repository.jpa.PermissionRepository;
+import com.ducminh.blogapi.repository.jpa.RoleRepository;
+import com.ducminh.blogapi.repository.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
