@@ -3,6 +3,7 @@ package com.ducminh.blogapi.service;
 import com.ducminh.blogapi.constant.ApiMethod;
 import com.ducminh.blogapi.constant.MessageRedisType;
 import com.ducminh.blogapi.dto.request.PostRequest;
+import com.ducminh.blogapi.dto.request.SimilarTitle;
 import com.ducminh.blogapi.dto.response.PostResponse;
 import com.ducminh.blogapi.entity.Post;
 import com.ducminh.blogapi.entity.PostEs;
@@ -19,8 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -45,6 +52,8 @@ public class PostService {
     private CloudinaryService cloudinaryService;
     @Autowired
     private PublisherMessage publisherMessage;
+    @Autowired
+    private ElasticsearchOperations operations;
 
     public PostResponse createPost(PostRequest request, Principal principal) {
         List<Tag> tags = tagRepository.findAllByNameIn(new ArrayList<>(request.getTags()));
@@ -124,5 +133,22 @@ public class PostService {
         return postResponse;
     }
 
+    public List<String> searchPostsBySimilarTitle(String title, Pageable pageable) {
+        Query query = NativeQuery.builder()
+                .withQuery(q -> q
+                        .match(m -> m
+                                .field("title")
+                                .query(title)
+                        )
+                )
+                .withPageable(pageable)
+                .build();
+        SearchHits<PostEs> postEsSearchHit = operations
+                .search(query, PostEs.class);
+        List<String> ids = postEsSearchHit.stream()
+                .map(SearchHit::getId)
+                .collect(Collectors.toList());
+        return ids;
+    }
 }
 

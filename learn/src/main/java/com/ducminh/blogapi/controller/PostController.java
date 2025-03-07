@@ -1,12 +1,15 @@
 package com.ducminh.blogapi.controller;
 
 import com.ducminh.blogapi.dto.request.PostRequest;
+import com.ducminh.blogapi.dto.request.SimilarTitle;
 import com.ducminh.blogapi.dto.response.ApiResponse;
 import com.ducminh.blogapi.dto.response.PostResponse;
 import com.ducminh.blogapi.entity.Post;
 import com.ducminh.blogapi.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -81,6 +84,20 @@ public class PostController {
         PostResponse postResponse = postService.getPostsById(postId);
         ApiResponse<PostResponse> apiResponse = ApiResponse.<PostResponse>builder()
                 .data(postResponse)
+                .build();
+        return apiResponse;
+    }
+
+    @GetMapping("/similar")
+    public ApiResponse<List<String>> searchPostsBySimilarTitle(
+            @RequestParam String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<String> ids = postService.searchPostsBySimilarTitle(title, pageable);
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .data(ids)
                 .build();
         return apiResponse;
     }

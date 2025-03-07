@@ -34,23 +34,12 @@ public class CommentController {
             @RequestParam(defaultValue = "2") int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        long startTotal = System.nanoTime();
-
-        long startCache = System.nanoTime();
         List<CommentResponse> commentResponses = commentService.findByPostId(postId, parentId, pageable);
-        long endCache = System.nanoTime();
 
-        long startSerialization = System.nanoTime();
         ApiResponse<List<CommentResponse>> apiResponse = ApiResponse.<List<CommentResponse>>builder()
                 .data(commentResponses)
                 .build();
-        long endSerialization = System.nanoTime();
 
-        long endTotal = System.nanoTime();
-
-        System.out.println("Redis Query Time: " + (endCache - startCache) / 1_000_000 + " ms");
-        System.out.println("Serialization Time: " + (endSerialization - startSerialization) / 1_000_000 + " ms");
-        System.out.println("Total API Response Time: " + (endTotal - startTotal) / 1_000_000 + " ms");
 
         return apiResponse;
     }
