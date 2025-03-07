@@ -62,7 +62,7 @@ public class RedisConfig {
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(1))// Hết hạn sau 60 giây
-                .computePrefixWith(cacheName -> "redis::" + cacheName)
+                .computePrefixWith(cacheName -> "redisKey::" + cacheName)
                 .disableCachingNullValues(); // Không cache giá trị null
 
         return RedisCacheManager.builder(connectionFactory)

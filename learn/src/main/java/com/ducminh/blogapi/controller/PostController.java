@@ -88,17 +88,31 @@ public class PostController {
         return apiResponse;
     }
 
+    //    @GetMapping("/similar")
+//    public ApiResponse<List<String>> searchPostsBySimilarTitle(
+//            @RequestParam String title,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "2") int size
+//    ) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        List<String> ids = postService.searchPostsBySimilarTitle(title, pageable);
+//        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+//                .data(ids)
+//                .build();
+//        return apiResponse;
+//    }
     @GetMapping("/similar")
-    public ApiResponse<List<String>> searchPostsBySimilarTitle(
+    public ApiResponse<List<PostResponse>> getPostsBySimilarTitle(
             @RequestParam String title,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "2") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        List<String> ids = postService.searchPostsBySimilarTitle(title, pageable);
-        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+        List<PostResponse> ids = postService.getPostsBySimilarTitle(title, pageable);
+        ApiResponse<List<PostResponse>> apiResponse = ApiResponse.<List<PostResponse>>builder()
                 .data(ids)
                 .build();
         return apiResponse;
     }
+
 }

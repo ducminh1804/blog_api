@@ -126,7 +126,7 @@ public class PostService {
     @Cacheable("post")
     public PostResponse getPostsById(String postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
-        log.info("createAt {}", post.getCreatedAt());
+        System.out.println("chao");
         PostResponse postResponse = postMapper.toPostResponse(post);
         postResponse.setUsername(post.getUser().getUsername());
         postResponse.setCreatedAt(post.getCreatedAt());
@@ -141,6 +141,7 @@ public class PostService {
                                 .query(title)
                         )
                 )
+                .withFields("_id")
                 .withPageable(pageable)
                 .build();
         SearchHits<PostEs> postEsSearchHit = operations
@@ -149,6 +150,20 @@ public class PostService {
                 .map(SearchHit::getId)
                 .collect(Collectors.toList());
         return ids;
+    }
+
+    public List<PostResponse> getPostsBySimilarTitle(String title, Pageable pageable) {
+        List<String> ids = searchPostsBySimilarTitle(title, pageable);
+        List<PostResponse> postResponses = postRepository.findAllById(ids)
+                .stream()
+                .map(item -> {
+                            PostResponse postResponse = postMapper.toPostResponse(item);
+                            postResponse.setUsername(item.getUser().getId());
+                            return postResponse;
+                        }
+                )
+                .collect(Collectors.toList());
+        return postResponses;
     }
 }
 

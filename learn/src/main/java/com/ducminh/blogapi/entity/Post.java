@@ -50,18 +50,5 @@ public class Post extends UserAudit {
     )
     private Set<Tag> tags = new HashSet<>();
 
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", body='" + body + '\'' +
-                ", kind='" + kind + '\'' +
-                ", upVoted=" + upVoted +
-                ", downVoted=" + downVoted +
-                ", comments=" + comments +
-                ", user=" + user +
-                ", tags=" + tags +
-                '}';
-    }
+
 }
