@@ -18,10 +18,14 @@ spring:
     elasticsearch:
       repositories:
         enabled: true
-  
+
   jackson:
     serialization:
       write-dates-as-timestamps: false
+
+#springdoc:
+#  swagger-ui:
+#    path: swagger-ui.html
 
 cluster:
   node: localhost:9200

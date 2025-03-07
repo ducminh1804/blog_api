@@ -1,5 +1,6 @@
 package com.ducminh.blogapi.service;
 
+import com.ducminh.blogapi.constant.ApiMethod;
 import com.ducminh.blogapi.constant.MessageRedisType;
 import com.ducminh.blogapi.entity.Post;
 import com.ducminh.blogapi.entity.PostEs;
@@ -26,14 +27,14 @@ public class SubscriberMessage implements MessageListener {
             // Sử dụng phương thức tổng quát để xử lý việc giải mã
             MessageRedisType<?> messageType = deserializeMessage(message);
 
-            String type = messageType.getType();
+            ApiMethod apiMethod = messageType.getApiMethod();
             Object value = messageType.getValue();
 
-            log.info("type {}", type);
+            log.info("type {}", apiMethod);
             log.info("value {}", value.getClass().getName());
 
-            switch (type) {
-                case "PostApi":
+            switch (apiMethod) {
+                case POST:
                     elasticsearchService.save(value);
                     log.info("success {}", "insert to es: " + value);
                     break;

@@ -1,5 +1,6 @@
 package com.ducminh.blogapi.service;
 
+import com.ducminh.blogapi.constant.ApiMethod;
 import com.ducminh.blogapi.constant.MessageRedisType;
 import com.ducminh.blogapi.dto.request.PostRequest;
 import com.ducminh.blogapi.dto.response.PostResponse;
@@ -80,7 +81,7 @@ public class PostService {
 
         PostEs postEs = postMapper.toPostEs(postResponse);
         MessageRedisType<PostEs> postEsMessageRedisType = MessageRedisType.<PostEs>builder()
-                .type("PostApi")
+                .apiMethod(ApiMethod.POST)
                 .value(postEs)
                 .build();
         publisherMessage.send(postEsMessageRedisType);

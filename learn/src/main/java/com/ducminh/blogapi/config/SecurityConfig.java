@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> {
                     auth
                             .requestMatchers("/auth/**").permitAll()
-                            .requestMatchers("/ws/**").permitAll() // Cho phép WebSocket không cần đăng nhập
+                            .requestMatchers("/ws/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll() // Cho phép WebSocket không cần đăng nhập
                             .requestMatchers(HttpMethod.POST, "/api/users").permitAll()// de "/api/users/" la sai day nhe
                             .anyRequest().authenticated()
                     ;

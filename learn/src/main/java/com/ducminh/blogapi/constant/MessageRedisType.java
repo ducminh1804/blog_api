@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class MessageRedisType<T> {
-    private String type;
-    
+    private ApiMethod apiMethod;
+
     @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
     private T value;
 }
