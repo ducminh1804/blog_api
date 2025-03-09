@@ -34,7 +34,7 @@ public class MessageService {
 
     private static final String key_queue_msg = "chat:queue";
     private static final String key_queue_msg_backup = "chat:queue_backup";
-    private static final int BATCH_SIZE = 10;
+    private static final int BATCH_SIZE = 3;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public Message saveMessages(MessageRequest request) {
@@ -69,7 +69,7 @@ public class MessageService {
                 })
                 .collect(Collectors.toList());
 
-
+        log.info("list msg {}", messageRequests.get(0).toString());
         if (!messageRequests.isEmpty()) {
             List<Message> messages = messageRequests.stream()
                     .map(messageMapper::toMessage)

@@ -19,7 +19,6 @@ public class Message {
     @Column(name = "id")
     private String id;
 
-
     @Column(name = "recipent_id")
     private String recipentId;
 

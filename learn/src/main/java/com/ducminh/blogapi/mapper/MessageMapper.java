@@ -12,6 +12,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface MessageMapper {
     @Mapping(source = "recipentId", target = "recipentId")
+    @Mapping(source = "senderId", target = "user.id")
     Message toMessage(MessageRequest request);
 
     @Mapping(source = "user.id", target = "senderId")

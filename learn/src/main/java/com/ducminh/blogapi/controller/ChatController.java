@@ -54,12 +54,15 @@ public class ChatController {
         simpMessagingTemplate.convertAndSendToUser(recipentId, "/queue/messages", message);
 
         MessageRequest messageRequest = MessageRequest.builder()
-                .senderId(message.getSenderId())
+                .senderId(principal.getName())
                 .recipentId(recipentId)
                 .content(message.getContent())
                 .build();
+        log.info("senderId {}", messageRequest.getSenderId());
+        log.info("recipentId {}", messageRequest.getRecipentId());
+        log.info("content {}", messageRequest.getContent());
 //        messageService.saveMessages(messageRequest);
-        
+
         messageService.saveMessagesToRedis(messageRequest);
         return message;
     }
