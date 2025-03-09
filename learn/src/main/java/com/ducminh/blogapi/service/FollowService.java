@@ -40,4 +40,9 @@ public class FollowService {
                 .orElse(Collections.emptyList());
         return followResponses;
     }
+
+    public List<String> findAllFollowingId(String followingId) {
+        List<String> list = followRepository.findAllByFollowingId(followingId);
+        return list;
+    }
 }

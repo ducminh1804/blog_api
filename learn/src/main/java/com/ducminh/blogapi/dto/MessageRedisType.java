@@ -1,5 +1,6 @@
-package com.ducminh.blogapi.constant;
+package com.ducminh.blogapi.dto;
 
+import com.ducminh.blogapi.constant.ApiMethod;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

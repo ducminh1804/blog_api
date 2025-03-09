@@ -1,9 +1,8 @@
 package com.ducminh.blogapi.service;
 
 import com.ducminh.blogapi.constant.ApiMethod;
-import com.ducminh.blogapi.constant.MessageRedisType;
+import com.ducminh.blogapi.dto.MessageRedisType;
 import com.ducminh.blogapi.dto.request.PostRequest;
-import com.ducminh.blogapi.dto.request.SimilarTitle;
 import com.ducminh.blogapi.dto.response.PostResponse;
 import com.ducminh.blogapi.entity.Post;
 import com.ducminh.blogapi.entity.PostEs;

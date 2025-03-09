@@ -1,6 +1,6 @@
 package com.ducminh.blogapi.config;
 
-import com.ducminh.blogapi.constant.Topic;
+import com.ducminh.blogapi.constant.TopicRedisPubSub;
 import com.ducminh.blogapi.service.SubscriberMessage;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -73,21 +73,21 @@ public class RedisConfig {
 
 
     @Bean
+    RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(messageListener(), topic(TopicRedisPubSub.POST));
+        return container;
+    }
+
+
+    @Bean
     MessageListenerAdapter messageListener() {
         return new MessageListenerAdapter(subscriberMessage);
     }
 
-    @Bean
-    ChannelTopic topic() {
-        return new ChannelTopic(Topic.Post.name());
-    }
 
-    @Bean
-    RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(messageListener(), topic());
-        return container;
+    ChannelTopic topic(TopicRedisPubSub topic) {
+        return new ChannelTopic(topic.name());
     }
-
 }

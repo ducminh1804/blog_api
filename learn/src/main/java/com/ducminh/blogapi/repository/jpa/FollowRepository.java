@@ -15,4 +15,7 @@ public interface FollowRepository extends JpaRepository<Follow, FollowId> {
     @Query(value = "SELECT f.following_id, u.username FROM follows f JOIN users u ON f.following_id = u.id WHERE f.follower_id = :id", nativeQuery = true)
     Optional<List<FollowResponseProjection>> findAllFollowerById(@Param("id") String id);
 
+    @Query(value = "Select f.follower_id from follows f where f.following_id = :id", nativeQuery = true)
+    List<String> findAllByFollowingId(String id);
+
 }

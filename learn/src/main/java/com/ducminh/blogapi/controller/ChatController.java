@@ -13,6 +13,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
 
@@ -57,8 +58,11 @@ public class ChatController {
                 .recipentId(recipentId)
                 .content(message.getContent())
                 .build();
-        messageService.saveMessages(messageRequest);
+//        messageService.saveMessages(messageRequest);
+        
+        messageService.saveMessagesToRedis(messageRequest);
         return message;
     }
+
 
 }

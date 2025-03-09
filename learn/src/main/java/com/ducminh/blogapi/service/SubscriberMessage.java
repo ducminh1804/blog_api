@@ -1,9 +1,7 @@
 package com.ducminh.blogapi.service;
 
 import com.ducminh.blogapi.constant.ApiMethod;
-import com.ducminh.blogapi.constant.MessageRedisType;
-import com.ducminh.blogapi.entity.Post;
-import com.ducminh.blogapi.entity.PostEs;
+import com.ducminh.blogapi.dto.MessageRedisType;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

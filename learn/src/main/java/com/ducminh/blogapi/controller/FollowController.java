@@ -33,4 +33,12 @@ public class FollowController {
                 .build();
         return apiResponse;
     }
+
+    @GetMapping("/{followingId}")
+    ApiResponse<List<String>> getAllFollowerId(@PathVariable String followingId) {
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .data(followService.findAllFollowingId(followingId))
+                .build();
+        return apiResponse;
+    }
 }
