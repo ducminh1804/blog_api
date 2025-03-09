@@ -1,6 +1,7 @@
 package com.ducminh.blogapi.service;
 
 import com.ducminh.blogapi.dto.request.MessageRequest;
+import com.ducminh.blogapi.dto.response.MessageResponse;
 import com.ducminh.blogapi.entity.Message;
 import com.ducminh.blogapi.entity.User;
 import com.ducminh.blogapi.mapper.MessageMapper;
@@ -11,16 +12,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@EnableCaching
 public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
@@ -77,5 +82,14 @@ public class MessageService {
             messageRepository.saveAll(messages);
             operations.opsForList().trim(key_queue_msg, BATCH_SIZE, -1);
         }
+    }
+
+    @Cacheable("message")
+    public List<MessageResponse> getMessagesPagination(String senderId, String recepientId, Instant instant) {
+        List<MessageResponse> messages = messageRepository.getMessagesPagination(senderId, recepientId, instant)
+                .stream()
+                .map(messageMapper::toMessageResponse)
+                .collect(Collectors.toList());
+        return messages;
     }
 }
