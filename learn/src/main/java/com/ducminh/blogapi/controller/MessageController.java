@@ -16,11 +16,6 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @PostMapping
-    public void testxongxoa(@RequestBody MessageRequest request) {
-        messageService.saveMessagesToRedis(request);
-    }
-
     @GetMapping
     ApiResponse<List<MessageResponse>> getMessagesPagination(
             @RequestParam Instant createAt,

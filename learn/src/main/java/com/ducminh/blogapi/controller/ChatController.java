@@ -61,6 +61,7 @@ public class ChatController {
         log.info("senderId {}", messageRequest.getSenderId());
         log.info("recipentId {}", messageRequest.getRecipentId());
         log.info("content {}", messageRequest.getContent());
+        log.info("createAt {}", messageRequest.getCreatedAt());
 //        messageService.saveMessages(messageRequest);
 
         messageService.saveMessagesToRedis(messageRequest);

@@ -160,11 +160,13 @@
 
 
         <!--	Java 8 Date/time	-->
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.15.3</version> <!-- Use the same version as jackson-databind -->
+            <version>2.18.2</version>
         </dependency>
+
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -196,7 +198,7 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.8.4</version>
         </dependency>
-        
+
     </dependencies>
 
     <build>

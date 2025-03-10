@@ -42,8 +42,7 @@ public class RedisConfig {
     private SubscriberMessage subscriberMessage;
 
     @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
-
+    private ObjectMapper objectMapper;
 
     //jackson khac voi genericjackson o cho: json dc tao ra k co dia chi @class entity,
     // jackson: {'id':123} ---- genericjackson: ['@class':'com.entity.post',{'id':123}]
@@ -53,7 +52,7 @@ public class RedisConfig {
         RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());//luu key dang string
-        template.setValueSerializer(new Jackson2JsonRedisSerializer<Object>(Object.class));//luu value dang json
+        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper, Object.class));//luu value dang json
         return template;
     }
 
@@ -62,7 +61,7 @@ public class RedisConfig {
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(1))// Hết hạn sau 60 giây
-                .computePrefixWith(cacheName -> "redisKey::" + cacheName)
+//                .computePrefixWith(cacheName -> "redisKey::" + cacheName + "::")
                 .disableCachingNullValues(); // Không cache giá trị null
 
         return RedisCacheManager.builder(connectionFactory)

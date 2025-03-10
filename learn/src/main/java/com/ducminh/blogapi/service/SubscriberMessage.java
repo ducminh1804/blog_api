@@ -19,6 +19,9 @@ public class SubscriberMessage implements MessageListener {
     @Autowired
     private ElasticsearchService elasticsearchService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
@@ -47,7 +50,6 @@ public class SubscriberMessage implements MessageListener {
 //    private <T> ReturnType methodName(Parameters) { ... }
 
     private <T> MessageRedisType<T> deserializeMessage(Message message) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(message.getBody(), new TypeReference<MessageRedisType<T>>() {
         });
     }

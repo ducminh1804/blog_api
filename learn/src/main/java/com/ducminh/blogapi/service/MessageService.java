@@ -37,10 +37,12 @@ public class MessageService {
     @Autowired
     private RedisOperations operations;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private static final String key_queue_msg = "chat:queue";
     private static final String key_queue_msg_backup = "chat:queue_backup";
     private static final int BATCH_SIZE = 3;
-    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public Message saveMessages(MessageRequest request) {
         log.info("request info: {}", request.toString());
@@ -84,7 +86,7 @@ public class MessageService {
         }
     }
 
-    @Cacheable("message")
+    @Cacheable(value = "message", key = "#senderId + ':'+#recepientId + ':' + #instant")
     public List<MessageResponse> getMessagesPagination(String senderId, String recepientId, Instant instant) {
         List<MessageResponse> messages = messageRepository.getMessagesPagination(senderId, recepientId, instant)
                 .stream()

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Instant;
+
 @Entity
 @Slf4j
 @NoArgsConstructor
@@ -25,6 +27,9 @@ public class Message {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "createdAt")
+    private Instant createdAt;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id")
     private User user;
