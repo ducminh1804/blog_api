@@ -43,4 +43,12 @@ public class CommentController {
 
         return apiResponse;
     }
+
+    @GetMapping("/flag/{parentId}")
+    ApiResponse<Long> checkChildComment(@PathVariable String parentId) {
+        ApiResponse<Long> apiResponse = ApiResponse.<Long>builder()
+                .data(commentService.checkChildComment(parentId))
+                .build();
+        return apiResponse;
+    }
 }

@@ -35,4 +35,8 @@ public class CommentService {
         Page<CommentResponse> commentResponses = commentRepository.findByPostId(postId, parentId, pageable).map(commentMapper::toCommentResponse);
         return commentResponses.getContent();
     }
+
+    public Long checkChildComment(String parentId) {
+        return commentRepository.checkChildComment(parentId);
+    }
 }

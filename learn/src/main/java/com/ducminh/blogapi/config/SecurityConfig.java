@@ -45,6 +45,7 @@ public class SecurityConfig {
                             .anyRequest().authenticated()
                     ;
                 })
+                .cors(httpSecurityCorsConfigurer -> corsConfigurationSource())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(new JwtAuthenticationFilter(
