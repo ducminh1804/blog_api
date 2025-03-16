@@ -12,7 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -22,7 +24,6 @@ public class CommentService {
     private CommentMapper commentMapper;
     @Autowired
     private CommentRepository commentRepository;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -31,9 +32,9 @@ public class CommentService {
     }
 
     @Cacheable("comment")
-    public List<CommentResponse> findByPostId(String postId, int parentId, Pageable pageable) {
+    public Page<CommentResponse> findByPostId(String postId, int parentId, Pageable pageable) {
         Page<CommentResponse> commentResponses = commentRepository.findByPostId(postId, parentId, pageable).map(commentMapper::toCommentResponse);
-        return commentResponses.getContent();
+        return commentResponses;
     }
 
     public Long checkChildComment(String parentId) {

@@ -17,4 +17,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, Cust
 
     @Query(value = "SELECT EXISTS (SELECT 1 FROM comments_closure WHERE ancestor_id = :ancestorId and depth = 1)", nativeQuery = true)
     Long checkChildComment(@Param("ancestorId") String ancestorId);
+
+    
 }

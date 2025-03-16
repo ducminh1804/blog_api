@@ -17,8 +17,10 @@ public interface PostMapper {
     Post toPost(PostRequest postRequest);
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "username", ignore = true)
+//    @Mapping(target = "createdAt", ignore = true)
+//    @Mapping(target = "username", ignore = true)
+    @Mapping(source = "user.username", target = "username")
+    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     PostResponse toPostResponse(Post post);
 
     PostEs toPostEs(PostResponse response);

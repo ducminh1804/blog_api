@@ -17,6 +17,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @Slf4j
 public class AuthenticationService {
@@ -94,6 +98,14 @@ public class AuthenticationService {
                 .build();
     }
 
+    public Map<String, Object> getUserInfo(Principal principal) {
+        String username = principal.getName();
+        String userId = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)).getId();
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", userId);
+        map.put("username", username);
+        return map;
+    }
 }
 
 

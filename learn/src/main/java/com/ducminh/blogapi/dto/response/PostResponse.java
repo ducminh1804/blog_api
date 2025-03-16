@@ -20,7 +20,6 @@ public class PostResponse implements Serializable {
     private Set<Tag> tags;
     private String username;
     private String kind;
-
     private Instant createdAt;
     private int upVoted;
     private int downVoted;

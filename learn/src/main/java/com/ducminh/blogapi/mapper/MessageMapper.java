@@ -13,5 +13,6 @@ public interface MessageMapper {
     Message toMessage(MessageRequest request);
 
     @Mapping(source = "user.id", target = "senderId")
+    @Mapping(source = "createdAt", target = "createAt")
     MessageResponse toMessageResponse(Message message);
 }

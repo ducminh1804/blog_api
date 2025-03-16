@@ -125,7 +125,6 @@ public class PostService {
     @Cacheable("post")
     public PostResponse getPostsById(String postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
-        System.out.println("chao");
         PostResponse postResponse = postMapper.toPostResponse(post);
         postResponse.setUsername(post.getUser().getUsername());
         postResponse.setCreatedAt(post.getCreatedAt());

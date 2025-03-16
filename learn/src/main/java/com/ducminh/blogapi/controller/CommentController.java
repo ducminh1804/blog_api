@@ -6,11 +6,14 @@ import com.ducminh.blogapi.dto.response.CommentResponse;
 import com.ducminh.blogapi.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/comments")
@@ -27,20 +30,16 @@ public class CommentController {
     }
 
     @GetMapping("/{postId}")
-    ApiResponse<List<CommentResponse>> findByPostId(
+    ApiResponse<Page<CommentResponse>> findByPostId(
             @PathVariable String postId,
             @RequestParam(defaultValue = "0") int parentId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "2") int size) {
         Pageable pageable = PageRequest.of(page, size);
-
-        List<CommentResponse> commentResponses = commentService.findByPostId(postId, parentId, pageable);
-
-        ApiResponse<List<CommentResponse>> apiResponse = ApiResponse.<List<CommentResponse>>builder()
+        Page<CommentResponse> commentResponses = commentService.findByPostId(postId, parentId, pageable);
+        ApiResponse<Page<CommentResponse>> apiResponse = ApiResponse.<Page<CommentResponse>>builder()
                 .data(commentResponses)
                 .build();
-
-
         return apiResponse;
     }
 

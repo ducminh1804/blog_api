@@ -14,8 +14,12 @@ import java.util.Date;
 public class CommentResponse implements Serializable {
     private int id;
     private String userId;
+    private String username;
     private String content;
     private Instant createdAt;
     private int voteDown;
     private int voteUp;
+    private int parentId;
+
+
 }

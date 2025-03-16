@@ -15,5 +15,5 @@ public class MessageResponse implements Serializable {
     private String senderId;
     private String recipentId;
     private String content;
-
+    private Instant createAt;
 }

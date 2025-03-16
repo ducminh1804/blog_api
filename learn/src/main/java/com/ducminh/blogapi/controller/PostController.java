@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,16 +69,22 @@ public class PostController {
         return apiResponse;
     }
 
+    //***************************************************************
+    //phan trang bang createAt
+    @GetMapping
+    public ApiResponse<List<PostResponse>> getPostsPagination(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant createAt) {
 
-    @GetMapping("")
-    public ApiResponse<List<PostResponse>> getPostsPagination(@RequestParam(required = false) Instant createAt) {
+        Instant finalCreateAt = (createAt != null) ? createAt : Instant.now();
 
-        List<PostResponse> postResponses = postService.getPostsPagination(createAt);
+        List<PostResponse> postResponses = postService.getPostsPagination(finalCreateAt);
 
         return ApiResponse.<List<PostResponse>>builder()
                 .data(postResponses)
                 .build();
     }
+    //***************************************************************
+
 
     @GetMapping("/{postId}")
     public ApiResponse<PostResponse> getPostById(@PathVariable String postId) {
@@ -87,6 +94,7 @@ public class PostController {
                 .build();
         return apiResponse;
     }
+
 
     @GetMapping("/similar")
     public ApiResponse<List<PostResponse>> getPostsBySimilarTitle(

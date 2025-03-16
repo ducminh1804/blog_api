@@ -14,7 +14,7 @@ public interface MessageRepository extends JpaRepository<Message, String> {
             "where created_at < :createAt " +
             "and ((sender_id = :senderId and recipent_id = :recipentId) " +
             "or (sender_id = :recipentId and recipent_id = :senderId))" +
-            " ORDER BY created_at DESC LIMIT 2", nativeQuery = true)
+            " ORDER BY created_at DESC LIMIT 5", nativeQuery = true)
     List<Message> getMessagesPagination(@Param("senderId") String senderId,
                                         @Param("recipentId") String recipentId,
                                         @Param("createAt") Instant createAt);

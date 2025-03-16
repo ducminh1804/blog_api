@@ -1,5 +1,6 @@
 package com.ducminh.blogapi.controller;
 
+import com.cloudinary.Api;
 import com.ducminh.blogapi.dto.request.AuthenticationRequest;
 import com.ducminh.blogapi.dto.request.IntrospectRequest;
 import com.ducminh.blogapi.dto.request.RefreshTokenRequest;
@@ -11,10 +12,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -73,5 +74,14 @@ public class AuthenticationController {
         return ApiResponse.<Void>builder()
                 .message("Đăng xuất thành công")
                 .build();
+    }
+
+    @GetMapping
+    ApiResponse<Map<String, Object>> getUserInfo(Principal principal) {
+        Map<String, Object> map = service.getUserInfo(principal);
+        ApiResponse<Map<String, Object>> apiResponse = ApiResponse.<Map<String, Object>>builder()
+                .data(map)
+                .build();
+        return apiResponse;
     }
 }

@@ -29,14 +29,12 @@ import java.util.stream.Collectors;
 public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private MessageMapper messageMapper;
     @Autowired
     private RedisOperations operations;
-
     @Autowired
     private ObjectMapper objectMapper;
 

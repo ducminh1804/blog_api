@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, String> {
 
-    @Query(value = "Select * from posts where created_at > :createAt ORDER BY created_at ASC LIMIT 10", nativeQuery = true)
+    @Query(value = "Select * from posts where created_at < :createAt ORDER BY created_at DESC LIMIT 5", nativeQuery = true)
     List<Post> getPostsPagination(@Param("createAt") Instant createAt);
 
     List<Post> findByTitle(String title);

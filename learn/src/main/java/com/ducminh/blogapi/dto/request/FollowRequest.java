@@ -1,5 +1,6 @@
 package com.ducminh.blogapi.dto.request;
 
+import com.ducminh.blogapi.constant.PrivacyEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
