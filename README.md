@@ -1,40 +1,55 @@
-📌 Blog API
-🔥 Description: This is a RESTful Blog API with features like CRUD for posts and comments, full-text search (Elasticsearch), authentication with JWT (Spring Security), real-time comments (WebSocket STOMP), and caching (Redis).
+# 📝 Blog API
 
-🚀 Technologies Used
-Spring Boot - The core framework.
-Spring Security + JWT - Authentication & authorization.
-Redis:
-Cache - Store blog posts to reduce database load.
-Pub/Sub - Synchronize data updates between services.
-Elasticsearch - Supports full-text search for blog posts.
-WebSocket (STOMP) - Enables real-time commenting on posts.
-Spring Data JPA (MySQL) - ORM for efficient database management.
-📌 Key Features
-✔ User authentication & role-based authorization (JWT, Spring Security)
-✔ User registration & login
-✔ CRUD operations for blog posts
-✔ Real-time commenting (WebSocket STOMP)
-✔ Full-text search for posts (Elasticsearch)
-✔ Caching blog posts (Redis) for performance optimization
-✔ Pub/Sub mechanism for post synchronization (Redis)
+A **RESTful Blog API** with features like **CRUD for posts and comments, full-text search (Elasticsearch), authentication (Spring Security + JWT), real-time comments (WebSocket STOMP), and caching (Redis).**
 
-📌 Installation & Setup
-1️⃣ Clone the repository
-bash
-Copy
-Edit
+---
+
+## 🚀 Technologies Used  
+
+| Technology               | Purpose                                         |
+|--------------------------|------------------------------------------------|
+| **Spring Boot**         | Core framework                                  |
+| **Spring Security + JWT** | Authentication & authorization                 |
+| **Redis**               | Caching (to reduce DB load) + Pub/Sub for event-driven updates |
+| **Elasticsearch**       | Full-text search for blog posts                 |
+| **WebSocket (STOMP)**   | Real-time commenting system                     |
+| **Spring Data JPA (MySQL)** | ORM for database management               |
+
+---
+
+## 📌 Features  
+
+✅ **User authentication & role-based authorization (JWT, Spring Security)**  
+✅ **User registration & login**  
+✅ **CRUD operations for blog posts**  
+✅ **Real-time comments using WebSocket (STOMP)**  
+✅ **Full-text search for blog posts using Elasticsearch**  
+✅ **Redis caching to optimize performance**  
+✅ **Redis Pub/Sub mechanism for data synchronization**  
+
+---
+
+## ⚡ Installation & Setup  
+
+### 1️⃣ Clone the Repository  
+```bash
 git clone https://github.com/ducmingg/blog_api.git
 cd blog_api
-2️⃣ Configure environment variables
-Create an application.yml file in src/main/resources and provide database, Redis, and Elasticsearch configurations.
+```
 
-3️⃣ Run the project
-bash
-Copy
-Edit
+### 2️⃣ Configure Environment Variables  
+Create an `application.yml` file in `src/main/resources` and provide:  
+- **Database configuration (MySQL)**  
+- **Redis configuration**  
+- **Elasticsearch configuration**  
+
+### 3️⃣ Run the Project  
+```bash
 mvn spring-boot:run
-📌 API Documentation (Swagger UI)
-Access API docs at:
-🔗 http://localhost:8080/swagger-ui.html
+```
 
+---
+
+## 🔥 API Documentation (Swagger UI)  
+Access API docs at:  
+🔗 `http://localhost:8080/swagger-ui.html`  
