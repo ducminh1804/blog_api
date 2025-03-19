@@ -12,7 +12,7 @@ A **RESTful Blog API** with features like **CRUD for posts and comments, full-te
 | **Spring Security + JWT** | Authentication & authorization                 |
 | **Redis**               | Caching (to reduce DB load) + Pub/Sub for event-driven updates |
 | **Elasticsearch**       | Full-text search for blog posts                 |
-| **WebSocket (STOMP)**   | Real-time commenting system                     |
+| **WebSocket (STOMP)**   | Real-time chat system                     |
 | **Spring Data JPA (MySQL)** | ORM for database management               |
 
 ---
