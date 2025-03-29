@@ -31,7 +31,7 @@ public class CommentService {
         commentRepository.createComment(request);
     }
 
-    @Cacheable("comment")
+    //    @Cacheable("comment")
     public Page<CommentResponse> findByPostId(String postId, int parentId, Pageable pageable) {
         Page<CommentResponse> commentResponses = commentRepository.findByPostId(postId, parentId, pageable).map(commentMapper::toCommentResponse);
         return commentResponses;

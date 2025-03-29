@@ -2,12 +2,16 @@ package com.ducminh.blogapi.config;
 
 import com.ducminh.blogapi.repository.jpa.UserRepository;
 import com.ducminh.blogapi.service.JwtService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -21,12 +25,15 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
@@ -46,10 +53,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*") //
+                .setAllowedOriginPatterns("*")//
                 .withSockJS();
+//                .setInterceptors(handshakeInterceptor());
 
     }
+
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -64,6 +73,35 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         return new ThreadPoolTaskScheduler();
     }
 
+    @Bean
+    public HandshakeInterceptor handshakeInterceptor() {
+        return new HandshakeInterceptor() {
+            @Override
+            public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) {
+                if (request instanceof ServletServerHttpRequest) {
+                    ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
+                    String token = servletRequest.getServletRequest().getHeader("Authorization");
+
+                    if (token != null && token.startsWith("Bearer ")) {
+                        token = token.substring(7); // Cắt "Bearer "
+                        String username = jwtService.extractUsername(token);
+                        List<SimpleGrantedAuthority> authorities = jwtService.extractAuthority(token);
+
+                        if (username != null) {
+                            attributes.put("USER", username); // Lưu vào session WebSocket
+                            return true; // Cho phép kết nối
+                        }
+                    }
+                }
+                return false; // Chặn kết nối nếu không có token hợp lệ
+            }
+
+            @Override
+            public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
+            }
+        };
+    }
+
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
@@ -71,6 +109,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+
                 if (StompCommand.CONNECT.equals(accessor.getCommand())) {
                     String token = accessor.getFirstNativeHeader("Authorization");
                     if (token != null && token.startsWith("Bearer")) {
@@ -86,6 +125,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     }
                 }
                 log.info("WebSocket preSend triggered for command: {}", accessor.getCommand());
+
                 return message;
             }
         });

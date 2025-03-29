@@ -39,7 +39,6 @@ public class HandleConnectWebsocket {
     private static final String OFFLINE = "OFFLINE";
 
     @EventListener
-
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(event.getMessage(), StompHeaderAccessor.class);
         log.info("da ket noi, info: {}", accessor.getUser().getName());
