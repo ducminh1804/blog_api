@@ -1,3 +1,4 @@
+# Link Frontend: https://github.com/ducminh1804/blog_frontend
 # 📝 Blog API
 
 A **RESTful Blog API** with features like **CRUD for posts and comments, full-text search (Elasticsearch), authentication (Spring Security + JWT), real-time comments (WebSocket STOMP), and caching (Redis).**
