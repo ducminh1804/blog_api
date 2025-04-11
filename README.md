@@ -23,7 +23,7 @@
 
 ---
 
-| Tính năng                                      | Mô tả                                                                 |
+| Tính năng                                      | Mục đích sử dụng trong dự án                                                                 |
 |------------------------------------------------|------------------------------------------------------------------------|
 | ✅ Caching bằng Redis                          | Giảm tải DB khi truy xuất bài viết, thông tin người dùng,...         |
 | ✅ Redis Pub/Sub                               | Khi đăng bài viết, gửi message để Elasticsearch index bài viết (non-blocking) |
