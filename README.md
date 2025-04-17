@@ -1,46 +1,137 @@
 # Link Frontend: https://github.com/ducminh1804/blog_frontend
 # 📝 Blog API
 
-**RESTful Blog API được xây dựng với định hướng tối ưu hiệu năng và khả năng mở rộng. Ngoài hỗ trợ các chức năng CRUD cơ bản, còn áp dụng nhiều giải pháp để cải thiện hiệu suất như caching (Redis cache), xử lý bất đồng bộ (Redis PubSub), tìm kiếm toàn văn bản (Elastic Search) tổ chức dữ liệu hiệu quả (Closure Table) và giảm tải cho cơ sở dữ liệu (Batch Processing), đồng thời áp dụng cơ chế xác thực và phân quyền để đảm bảo an toàn truy cập và bảo vệ tài nguyên (Jwt & Spring Security).**
+# 🎥 Overview
 
----
+This is a RESTful Blog API designed for high performance and scalability. Beyond basic CRUD operations, it incorporates various solutions to improve performance, including caching (Redis cache), asynchronous processing (Redis PubSub), full-text search (Elasticsearch), efficient data organization (Closure Table), and database load reduction (Batch Processing). Security is ensured through robust authentication and authorization mechanisms (JWT & Spring Security).
 
-## 🚀 Công Nghệ Sử Dụng  
+# ✨ Features
 
-| Công nghệ                | Mục đích                                         |
-|--------------------------|--------------------------------------------------|
-| **Spring Boot**         | Framework cốt lõi                                |
-| **Spring Security + JWT** | Xác thực & phân quyền người dùng                 |
-| **Redis**               | Cache (giảm tải DB) + Pub/Sub cho cập nhật sự kiện |
-| **Elasticsearch**       | Tìm kiếm toàn văn bài viết                        |
-| **WebSocket (STOMP)**   | Hệ thống chat thời gian thực                     |
-| **Spring Data JPA (MySQL)** | ORM để quản lý cơ sở dữ liệu                  |
-| **Swagger (Springdoc OpenAPI)** | Tự động tạo tài liệu API, giúp frontend dễ hiểu & test API qua Swagger UI       |
-| **AspectJ + Spring Aspects**     | Áp dụng AOP để xử lý các tác vụ như logging, audit mà không làm rối business logic |
-| **Spring Validation**            | Xác thực dữ liệu đầu vào của người dùng bằng annotation (VD: `@NotBlank`,...)   |
-| **MapStruct**                    | Tự động ánh xạ giữa Entity ↔ DTO, giúp code gọn gàng và rõ ràng hơn              |
-| **dotenv-java**                  | Load các biến môi trường từ file `.env`, giúp cấu hình dễ dàng và bảo mật hơn    |
+*   ✅ Caching with Redis: Reduces database load when accessing posts, user information, etc.
+*   ✅ Redis Pub/Sub: Asynchronous message queue to trigger Elasticsearch indexing upon post creation (non-blocking).
+*   ✅ Full-Text Search: Integrated Elasticsearch for fuzzy searching of articles by title.
+*   ✅ Real-time Messaging (WebSocket + Redis): Enables real-time chat functionality via WebSocket, temporarily storing messages in Redis before batch writing to the database.
+*   ✅ Pagination: Implements pagination for posts and comments using Spring's `Pageable`.
+*   ✅ Nested Comments (Closure Table): Organizes nested comments using the **Closure Table** model. This stores parent-child relationships between comments in a separate table, enabling **fast, non-recursive comment tree queries**, optimizing the display of hierarchical comments.
+*   ✅ Media Storage with Cloudinary: Uploads and processes images/videos, returning direct URLs.
+*   ✅ Authentication & Authorization: Leverages JWT + Spring Security with Role & Permission-based authorization.
+*   ✅ Registration & Login: Provides complete basic authentication functionality for users.
+*   ✅ CRUD Operations for Posts: Enables creation, reading, updating, and deletion of posts.
 
----
+# 📂 Folder Structure
+```plaintext
+src/
+├── main/
+│   ├── java/
+│   │   └── com/
+│   │       └── example/
+│   │           └── blog/
+│   │               ├── aspect/          # Aspect-Oriented Programming (AOP)
+│   │               ├── auth/            # Authentication & Authorization logic
+│   │               ├── config/          # Configuration classes (Security, Redis, Elasticsearch, etc.)
+│   │               ├── controller/      # REST API controllers
+│   │               ├── dto/             # Data Transfer Objects
+│   │               ├── entity/          # JPA Entities (database models)
+│   │               ├── enums/           # Enums
+│   │               ├── exception/       # Custom exceptions and handlers
+│   │               ├── repository/      # Spring Data JPA repositories
+│   │               ├── search/          # Elasticsearch integration logic
+│   │               ├── service/         # Business logic services
+│   │               ├── websocket/       # WebSocket config & message handlers
+│   │               └── BlogApplication.java  # Main Spring Boot application
+│   └── resources/
+│       ├── application.yml             # Configuration properties
+│       ├── static/                     # Static assets (if any)
+│       └── templates/                  # Thymeleaf templates (if used)
+├── test/
+│   └── java/                           # Unit and integration tests
+├── .env                                # Environment variables (dotenv)
+├── pom.xml                             # Maven configuration
+└── README.md                           # Project README
+```
 
-| Tính năng                                      | Mục đích sử dụng trong dự án                                                                 |
-|------------------------------------------------|------------------------------------------------------------------------|
-| ✅ Caching bằng Redis                          | Giảm tải DB khi truy xuất bài viết, thông tin người dùng,...         |
-| ✅ Redis Pub/Sub                               | Khi đăng bài viết, gửi message để Elasticsearch index bài viết (non-blocking) |
-| ✅ Tìm kiếm toàn văn                           | Tích hợp Elasticsearch để tìm kiếm bài viết theo tiêu đề gần đúng     |
-| ✅ Tin nhắn thời gian thực (WebSocket + Redis) | Gửi tin nhắn qua WebSocket, lưu tạm Redis → ghi batch vào DB          |
-| ✅ Pagination                                   | Phân trang bài viết & bình luận với `Pageable`                        |
-| ✅ Nested Comment (Closure Table)              | Mô hình tổ chức bình luận lồng nhau bằng **Closure Table** – lưu quan hệ cha-con giữa các bình luận trong bảng riêng, giúp **truy vấn cây bình luận nhanh, không đệ quy**, tối ưu cho hiển thị dạng cây |
-| ✅ Lưu trữ media với Cloudinary                | Upload & xử lý ảnh/video, trả về link trực tiếp                       |
-| ✅ Xác thực & phân quyền                       | Sử dụng JWT + Spring Security với phân quyền theo Role & Permission   |
-| ✅ Đăng ký & đăng nhập                         | Hỗ trợ đầy đủ chức năng auth cơ bản cho người dùng                    |
-| ✅ CRUD bài viết                                | Tạo, xem, sửa, xoá bài viết                                           |
+# 🏛️ Base Dependencies
 
+| Technology                 | Purpose                                          |
+| -------------------------- | ------------------------------------------------- |
+| **Spring Boot**          | Core framework                                   |
+| **Spring Security + JWT**  | User authentication & authorization              |
+| **Redis**                | Caching (database offloading) + Pub/Sub for event updates |
+| **Elasticsearch**        | Full-text search for articles                     |
+| **WebSocket (STOMP)**    | Real-time chat system                            |
+| **Spring Data JPA (MySQL)** | ORM for database management                      |
+| **Swagger (Springdoc OpenAPI)** | Automatic API documentation generation for frontend understanding & testing via Swagger UI |
+| **AspectJ + Spring Aspects** | AOP for cross-cutting concerns like logging and auditing |
+| **Spring Validation**     | Input data validation using annotations (@NotBlank, etc.) |
+| **MapStruct**             | Automatic mapping between Entities ↔ DTOs        |
+| **dotenv-java**             | Load environment variables from `.env` files      |
 
+# 🛠️ Prerequisites
 
----
+Before running this API, ensure you have the following installed:
 
+*   Java Development Kit (JDK): Version 17 or higher is recommended.
+*   Maven: A build automation tool used for managing project dependencies.
+*   MySQL: A relational database used for storing persistent data.
+*   Redis: An in-memory data structure store used for caching and Pub/Sub.
+*   Elasticsearch: A search engine used for full-text search.
+*   Cloudinary Account: (If using media storage features) You'll need an account to upload and manage media files.
 
-## 🔥 API Documentation (Swagger UI)  
-Access API docs at:  
-🔗 `http://localhost:8080/swagger-ui.html`  
+# 🚀 Getting Started
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/ducminh1804/blog_frontend
+    cd blog_frontend # change directory to the backend folder if frontend and backend are in the same repo
+    ```
+
+2.  **Configure Environment Variables:**
+
+    *   Create a `.env` file in the root directory of the project.
+    *   Define the necessary environment variables within the `.env` file. Examples:
+
+        ```
+        SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/your_database_name?createDatabaseIfNotExist=true&useSSL=false
+        SPRING_DATASOURCE_USERNAME=your_mysql_username
+        SPRING_DATASOURCE_PASSWORD=your_mysql_password
+        REDIS_HOST=localhost
+        REDIS_PORT=6379
+        ELASTICSEARCH_HOST=localhost
+        ELASTICSEARCH_PORT=9200
+        CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+        CLOUDINARY_API_KEY=your_cloudinary_api_key
+        CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+        JWT_SECRET=your_jwt_secret_key  # A strong, randomly generated secret
+        ```
+
+3.  **Build and Run the Application:**
+
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+
+    (or simply `mvn spring-boot:run` if you have Maven installed globally)
+
+4.  **Access Swagger UI:**
+
+    Once the application is running, you can access the API documentation through Swagger UI at:
+
+    🔗 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+# 🔗 References
+
+*   Spring Boot: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
+*   Spring Security: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
+*   Redis: [https://redis.io/](https://redis.io/)
+*   Elasticsearch: [https://www.elastic.co/](https://www.elastic.co/)
+*   Spring Data JPA: [https://spring.io/projects/spring-data-jpa](https://spring.io/projects/spring-data-jpa)
+*   Swagger/Springdoc OpenAPI: [https://springdoc.org/](https://springdoc.org/)
+*   Cloudinary: [https://cloudinary.com/](https://cloudinary.com/)
+*   MapStruct: [https://mapstruct.org/](https://mapstruct.org/)
+
+# 📧 Contact
+
+For any questions or issues, please contact:
+
+[voducminh39@gmail.com]
