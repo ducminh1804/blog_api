@@ -3,7 +3,7 @@
 
 # 🎥 Overview
 
-This is a RESTful Blog API designed for high performance and scalability. Beyond basic CRUD operations, it incorporates various solutions to improve performance, including caching (Redis cache), asynchronous processing (Redis PubSub), full-text search (Elasticsearch), efficient data organization (Closure Table), and database load reduction (Batch Processing). Security is ensured through robust authentication and authorization mechanisms (JWT & Spring Security).
+The RESTful Blog API is a high-performance, scalable backend solution designed to handle dynamic blog functionalities. It supports robust CRUD operations for posts, comments, and user profiles, while leveraging advanced performance-enhancing features such as Redis caching for fast data retrieval, Redis Pub/Sub for real-time updates, and Elasticsearch for efficient full-text search. The API uses the Closure Table pattern for managing hierarchical comment structures, while batch processing optimizes data operations. Security is reinforced through JWT authentication and Spring Security for secure access control. Built with scalability in mind, the API ensures high availability and can efficiently manage heavy traffic and large datasets.
 
 # ✨ Features
 
